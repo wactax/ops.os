@@ -40,6 +40,8 @@ apt-get update &&
 
 systemctl enable --now smartdns
 systemctl disable --now systemd-resolved
+grep -q '119\.29\.29\.29' /etc/smartdns/smartdns.conf || echo -e "server 223.5.5.5\nserver 223.6.6.6\nserver 119.29.29.29" | tee -a /etc/smartdns/smartdns.conf
+systemctl restart smartdns
 systemctl restart systemd-networkd
 sed -i 's/127.0.0.53/127.0.0.1/g' /etc/resolv.conf
 
