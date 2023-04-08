@@ -109,7 +109,8 @@ RUN \
 curl -fLo /etc/vim/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 RUN eval $(rtx env) &&\
-vi -E -u /etc/vim/sysinit.vim +PlugInstall +qa && vi +'UpdateRemotePlugins' +qa && \
+vi -E -u /etc/vim/sysinit.vim +PlugInstall +qa &&\
+vi -E -s -u /etc/vim/sysinit.vim +UpdateRemotePlugins +qa &&\
 && vi +'CocInstall -sync coc-json coc-yaml coc-css coc-python coc-vetur coc-tabnine coc-svelte' +qa  
 RUN find /etc/vim -type d -exec chmod 755 {} +
 
