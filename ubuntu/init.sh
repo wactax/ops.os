@@ -36,7 +36,9 @@ systemctl stop snapd || true
 apt remove --purge --assume-yes snapd gnome-software-plugin-snap
 
 apt-get update &&
-  apt-get install -y tzdata zram-config cron
+  apt-get install -y tzdata zram-config cron smartdns
+
+systemctl enable --now smartdns
 
 if [ -n "$CN" ]; then
   export LANG=zh_CN.UTF-8
