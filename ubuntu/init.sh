@@ -39,6 +39,9 @@ apt-get update &&
   apt-get install -y tzdata zram-config cron smartdns
 
 systemctl enable --now smartdns
+systemctl disable --now systemd-resolved
+systemctl restart systemd-networkd
+sed -i 's/127.0.0.53/127.0.0.1/g' /etc/resolv.conf
 
 if [ -n "$CN" ]; then
   export LANG=zh_CN.UTF-8
