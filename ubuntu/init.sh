@@ -31,13 +31,10 @@ if [ -n "$GFW" ]; then
   rsync -avI $ZHOS/ /
   source $ZHOS/root/.export
   if ! [ -x "$(command -v pip3)" ]; then
-  apt-get install -y python
+    apt-get install -y python
   fi
   pip3 install apt-select
-  apt-select --country CN
-  if [ -f "/root/sources.list" ]; then
-    mv /root/sources.list /etc/apt/
-  fi
+  apt-select --country CN && mv /root/sources.list /etc/apt/ || true
 
 fi
 
