@@ -30,6 +30,10 @@ if [ -n "$GFW" ]; then
   sed -i "s/archive.ubuntu.com/mirrors.163.com/g" /etc/apt/sources.list
   rsync -avI $ZHOS/ /
   source $ZHOS/root/.export
+  apt-get install -y python
+  pip3 install apt-select
+  apt-select --country CN
+  mv /root/sources.list /etc/apt/
 fi
 
 systemctl stop snapd || true
