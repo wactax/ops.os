@@ -30,6 +30,12 @@ if [ -n "$GFW" ]; then
   sed -i "s/archive.ubuntu.com/mirrors.163.com/g" /etc/apt/sources.list
   rsync -avI $ZHOS/ /
   source $ZHOS/root/.export
+  if ! [ -x "$(command -v pip3)" ]; then
+    apt-get install -y python
+  fi
+  pip3 install apt-select
+  apt-select --country CN && mv /root/sources.list /etc/apt/ || true
+
 fi
 
 systemctl stop snapd || true
@@ -196,7 +202,7 @@ update-alternatives --install /usr/bin/editor editor /usr/bin/nvim 1 &&
 
 $CURL -fLo /etc/vim/plug.vim --create-dirs https://cdn.jsdelivr.net/gh/junegunn/vim-plug/plug.vim
 vi -E -s -u /etc/vim/sysinit.vim +PlugInstall +qa
-vi -E -s -u /etc/vim/sysinit.vim +UpdateRemotePlugins +qa
+vi +UpdateRemotePlugins +qa
 vi +'CocInstall -sync coc-json coc-yaml coc-css coc-python coc-vetur coc-tabnine coc-svelte' +qa
 find /etc/vim -type d -exec chmod 755 {} +
 
