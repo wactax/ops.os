@@ -6,9 +6,8 @@ eval $(rtx env)
 
 [ -z "$PS1" ] && return
 
-eval "$(rtx activate --quiet zsh)"
-
 . ~/.zinit.zsh
+eval "$(rtx activate --quiet zsh)"
 
 autoload -Uz compinit && compinit -u
 
