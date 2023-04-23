@@ -8,7 +8,7 @@ RUN apt-get update &&\
 apt-get upgrade -y &&\
 apt-get dist-upgrade -y &&\
 apt-get install -y glances unzip build-essential musl-tools g++ git bat pgformatter \
-libffi-dev zlib1g-dev liblzma-dev libssl-dev pkg-config \
+libffi-dev zlib1g-dev liblzma-dev libssl-dev pkg-config git-lfs \
 libreadline-dev libbz2-dev libsqlite3-dev \
 libzstd-dev protobuf-compiler zsh supervisor \
 software-properties-common curl wget cmake \
@@ -20,7 +20,7 @@ systemctl enable --now supervisor
 
 SHELL ["/bin/zsh", "-c"]
 
-RUN git clone --depth=1 https://github.com/mobile-shell/mosh.git &&\
+RUN git lfs install && git clone --depth=1 https://github.com/mobile-shell/mosh.git &&\
 cd mosh && ./autogen.sh && ./configure &&\
 make && make install && cd .. && rm -rf mosh
 
