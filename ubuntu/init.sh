@@ -76,10 +76,11 @@ apt-get update &&
     libffi-dev zlib1g-dev liblzma-dev libssl-dev pkg-config pgformatter \
     libreadline-dev libbz2-dev libsqlite3-dev \
     glances libzstd-dev protobuf-compiler zsh \
-    software-properties-common curl wget cmake \
+    software-properties-common curl wget cmake git-lfs \
     autoconf automake libtool supervisor
 
 systemctl enable --now supervisor
+git lfs install
 
 chsh -s /bin/zsh root
 
