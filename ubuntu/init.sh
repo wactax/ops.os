@@ -165,6 +165,7 @@ pnpm install -g neovim npm-check-updates coffeescript node-pre-gyp \
   diff-so-fancy rome@next @antfu/ni prettier \
   @prettier/plugin-pug stylus-supremacy @w5/gitreset &
 
+go install github.com/charmbracelet/glow@latest
 go install mvdan.cc/sh/cmd/shfmt@latest
 go install github.com/muesli/duf@master
 go install github.com/louisun/heyspace@latest

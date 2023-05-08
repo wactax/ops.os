@@ -56,6 +56,7 @@ rtx plugin add golang &&\
 rtx install golang@latest &&\
 rtx global golang@latest &&\
 eval $(rtx env) &&\
+go install github.com/charmbracelet/glow@latest &&\
 go install mvdan.cc/sh/cmd/shfmt@latest &&\
 go install github.com/muesli/duf@master &&\
 go install github.com/louisun/heyspace@latest
