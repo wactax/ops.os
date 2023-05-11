@@ -1,9 +1,10 @@
 " 安装 vi +PlugInstall +qall
 " 升级 vi +PlugUpdate +qall
 
-source /etc/vim/plug.vim
-
 let g:coc_data_home = '/etc/vim/coc'
+let g:autoformat_verbosemode=1
+
+source /etc/vim/plug.vim
 
 call plug#begin('/etc/vim/plug')
 Plug 'yegappan/mru'        " 最近打开过的文件
@@ -74,8 +75,12 @@ let b:ale_fixers = {
 \  'python':['ruff']
 \}
 
+let g:formatters_python = ['yapf']
+
+let g:formatters_lua = ['stylua']
+
 let g:formatters_pug= ['prettier']
-"let g:formatters_toml= ['prettier']
+let g:formatters_toml= ['prettier']
 
 let g:formatdef_gopfmt = '"gop fmt"'
 let g:formatters_go= ['gopfmt']
@@ -258,7 +263,6 @@ set showcmd             "命令行模式按tab补全命令
 set wildmenu            "命令行模式按tab补全命令
 "根据缩进折叠代码
 set fdm=indent
-"python文件模板
 autocmd BufNewFile *.vsh 0r /etc/vim/bundle/template/vim.vsh
 autocmd BufNewFile *.svelte 0r /etc/vim/bundle/template/vim.svelte
 autocmd BufNewFile *.py 0r /etc/vim/bundle/template/vim.py
@@ -408,14 +412,15 @@ autocmd BufWritePost *.{md,mdt} :silent! !heyspace -i % -b /tmp -q
 autocmd BufWritePost *.{md,mdt} :edit
 autocmd BufWritePost *.{md,mdt} :redraw!
 
-au BufWritePre *.{sh,h,cpp,c,v,proto,json,go,html,scss,css,dart,toml,rs,pug,py,lua} :Autoformat
+au BufWritePost *.{lua} :Autoformat
+au BufWritePre *.{sh,h,cpp,c,v,proto,json,go,html,scss,css,dart,toml,rs,pug,py} :Autoformat
 autocmd BufWritePost *.{js,mjs} :silent! !rome format --write %
 autocmd BufWritePost *.{js,mjs} :edit
 autocmd BufWritePost *.{js,mjs} :redraw!
 
-autocmd BufWritePost *.sql :silent! !pg_format -s 2 -W 999 -w 999 -i %
-autocmd BufWritePost *.sql :edit
-autocmd BufWritePost *.sql :redraw!
+" autocmd BufWritePost *.sql :silent! !pg_format -s 2 -W 999 -w 999 -i %
+" autocmd BufWritePost *.sql :edit
+" autocmd BufWritePost *.sql :redraw!
 
 let g:syntastic_swift_checkers = ['swiftpm', 'swiftlint']
 let g:vue_pre_processors = ['pug','coffee','stylus','styl']
