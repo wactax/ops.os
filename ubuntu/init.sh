@@ -253,27 +253,27 @@ mesize=$(cat /proc/meminfo | grep -oP '^MemTotal:\s+\K\d+' /proc/meminfo)
 sd -s "#cron.*" "cron.*" /etc/rsyslog.d/50-default.conf
 systemctl restart rsyslog
 
-ipinfo=$(curl -s ipinfo.io)
+# ipinfo=$(curl -s ipinfo.io)
+#
+# iporg=$(echo $ipinfo | jq -r ".org")
+#
+# case $iporg in
+# *"Tencent"*) iporg=qq ;;
+# *"Contabo"*) iporg=con ;;
+# *"Alibaba"*) iporg=ali ;;
+# *"Amazon"*) iporg=aws ;;
+# *) iporg=any ;;
+# esac
 
-iporg=$(echo $ipinfo | jq -r ".org")
+# ipaddr=$(echo $ipinfo | jq -r '.city' | dd conv=lcase 2>/dev/null | sed 's/\s//g')
+#
+# mem=$(expr $(free -m | sed -n '2p' | awk '{print $2}') / 1000)
+#
+# name=$iporg-${mem}g-$(date +'%Y%m%d')-$ipaddr
 
-case $iporg in
-*"Tencent"*) iporg=qq ;;
-*"Contabo"*) iporg=con ;;
-*"Alibaba"*) iporg=ali ;;
-*"Amazon"*) iporg=aws ;;
-*) iporg=any ;;
-esac
+# echo $name
 
-ipaddr=$(echo $ipinfo | jq -r '.city' | dd conv=lcase 2>/dev/null | sed 's/\s//g')
-
-mem=$(expr $(free -m | sed -n '2p' | awk '{print $2}') / 1000)
-
-name=$iporg-${mem}g-$(date +'%Y%m%d')-$ipaddr
-
-echo $name
-
-hostnamectl set-hostname $name
+#hostnamectl set-hostname $name
 
 apt-get autoremove -y
 
