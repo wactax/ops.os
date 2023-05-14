@@ -296,4 +296,6 @@ sed -i "s/#ClientAliveCountMax 3/ClientAliveCountMax 3/g" /etc/ssh/sshd_config
 service sshd reload || service ssh reload
 apt autoremove -y
 
+rm /etc/supervisord.conf
+ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf
 echo '👌 ✅'
