@@ -11,6 +11,22 @@ export PATH=$PNPM_HOME:$PATH
 
 ZHOS=$ROOT/build/ubuntu_zh/os
 
+if [ -x "$(command -v snap)" ]; then
+systemctl stop snapd || true
+apt remove --purge --assume-yes snapd gnome-software-plugin-snap
+systemctl disable snapd.service
+systemctl disable snapd.socket
+systemctl disable snapd.seeded.service
+apt autoremove -y --purge snapd
+apt purge snapd -y
+rm -rf /var/cache/snapd
+fi
+
+if ! [ -x "$(command -v rsync)" ]; then
+apt-get update -y
+apt-get install -y rsync git
+fi
+
 CURL="curl --connect-timeout 5 --max-time 10 --retry 99 --retry-delay 0"
 
 if [ -z "$GFW" ]; then
@@ -27,19 +43,17 @@ gfw_git
 
 if [ -n "$GFW" ]; then
   cd /etc/apt
-  sed -i "s/archive.ubuntu.com/mirrors.163.com/g" /etc/apt/sources.list
+  sed -i "s/archive.ubuntu.com/mirrors.aliyun.com/g" /etc/apt/sources.list
   rsync -avI $ZHOS/ /
   source $ZHOS/root/.export
   if ! [ -x "$(command -v pip3)" ]; then
-    apt-get install -y python
+    apt-get install -y python3 python3-pip
   fi
-  pip3 install apt-select
+  pip3 install apt-select --break-system-packages
   apt-select --country CN && mv /root/sources.list /etc/apt/ || true
 
 fi
 
-systemctl stop snapd || true
-apt remove --purge --assume-yes snapd gnome-software-plugin-snap
 
 apt-get update &&
   apt-get install -y tzdata zram-config cron smartdns
