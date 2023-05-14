@@ -83,7 +83,7 @@ export TERM=xterm-256color
 apt-get update &&
   apt-get upgrade -y &&
   apt-get dist-upgrade -y &&
-  apt-get install -y unzip gcc build-essential musl-tools g++ git bat \
+  apt-get install -y unzip gcc build-essential musl-tools g++ git \
     libffi-dev zlib1g-dev liblzma-dev libssl-dev pkg-config pgformatter \
     libreadline-dev libbz2-dev libsqlite3-dev \
     glances libzstd-dev protobuf-compiler zsh \
@@ -127,7 +127,7 @@ cargo install --root /usr/local --locked watchexec-cli
 
 cargo install --root /usr/local \
   stylua exa cargo-cache tokei \
-  diskus cargo-edit cargo-update ntpd-rs rtx-cli
+  diskus cargo-edit cargo-update ntpd-rs rtx-cli bat
 
 rtx_add() {
   rtx plugin add $1
