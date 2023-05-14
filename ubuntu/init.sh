@@ -52,6 +52,9 @@ if [ -n "$GFW" ]; then
   pip3 install apt-select --break-system-packages && apt-select --country CN && mv /root/sources.list /etc/apt/ || true
 fi
 
+export GITHUB=https://github.com
+[ $GFW ] && export GITHUB=https://ghproxy.com/$GITHUB
+
 apt-get update &&
   apt-get install -y tzdata zram-config cron smartdns
 
@@ -119,9 +122,9 @@ cargo install --root /usr/local sd
 
 $DIR/zram.sh
 
-cargo install --root /usr/local --git https://github.com/wacfork/ripgrep.git
+cargo install --root /usr/local --git $GITHUB/wacfork/ripgrep.git
 
-cargo install --root /usr/local --git https://github.com/memorysafety/ntpd-rs ntpd
+cargo install --root /usr/local --git $GITHUB/memorysafety/ntpd-rs ntpd
 
 cargo install --root /usr/local --locked watchexec-cli
 
@@ -163,7 +166,6 @@ fi
 export BUN_INSTALL=/opt/bun
 
 if [ ! -d "$BUN_INSTALL" ]; then
-  [ $CN ] && export GITHUB=https://ghproxy.com/https://github.com
   $CURL https://ghproxy.com/https://raw.githubusercontent.com/oven-sh/bun/main/src/cli/install.sh | bash
   #$CURL https://bun.sh/install | bash
 fi
