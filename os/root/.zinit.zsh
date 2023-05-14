@@ -29,9 +29,6 @@ zinit light changyuheng/fz
 zinit ice wait lucid
 zinit light changyuheng/zsh-interactive-cd
 
-zinit ice wait lucid
-zinit light zdharma-continuum/fast-syntax-highlighting
-
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#aaaaaa,bg=black"
 zinit ice wait lucid atload'_zsh_autosuggest_start'
 zinit light zsh-users/zsh-autosuggestions

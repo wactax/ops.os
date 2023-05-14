@@ -12,19 +12,19 @@ export PATH=$PNPM_HOME:$PATH
 ZHOS=$ROOT/build/ubuntu_zh/os
 
 if [ -x "$(command -v snap)" ]; then
-systemctl stop snapd || true
-apt remove --purge --assume-yes snapd gnome-software-plugin-snap
-systemctl disable snapd.service
-systemctl disable snapd.socket
-systemctl disable snapd.seeded.service
-apt autoremove -y --purge snapd
-apt purge snapd -y
-rm -rf /var/cache/snapd
+  systemctl stop snapd || true
+  apt remove --purge --assume-yes snapd gnome-software-plugin-snap
+  systemctl disable snapd.service
+  systemctl disable snapd.socket
+  systemctl disable snapd.seeded.service
+  apt autoremove -y --purge snapd
+  apt purge snapd -y
+  rm -rf /var/cache/snapd
 fi
 
 if ! [ -x "$(command -v rsync)" ]; then
-apt-get update -y
-apt-get install -y rsync git
+  apt-get update -y
+  apt-get install -y rsync git
 fi
 
 CURL="curl --connect-timeout 5 --max-time 10 --retry 99 --retry-delay 0"
@@ -49,11 +49,8 @@ if [ -n "$GFW" ]; then
   if ! [ -x "$(command -v pip3)" ]; then
     apt-get install -y python3 python3-pip
   fi
-  pip3 install apt-select --break-system-packages
-  apt-select --country CN && mv /root/sources.list /etc/apt/ || true
-
+  pip3 install apt-select --break-system-packages && apt-select --country CN && mv /root/sources.list /etc/apt/ || true
 fi
-
 
 apt-get update &&
   apt-get install -y tzdata zram-config cron smartdns
@@ -130,7 +127,7 @@ cargo install --root /usr/local --locked watchexec-cli
 
 cargo install --root /usr/local \
   stylua exa cargo-cache tokei \
-  diskus cargo-edit cargo-update ntpd-rs rtx-cli erdtree
+  diskus cargo-edit cargo-update ntpd-rs rtx-cli
 
 rtx_add() {
   rtx plugin add $1
@@ -142,6 +139,7 @@ rtx_add nodejs
 rtx_add golang
 rtx_add lua
 rtx_add python
+rtx list >~/.tool-versions
 
 eval $(rtx env)
 
