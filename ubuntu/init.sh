@@ -127,13 +127,13 @@ if ! [ -x "$(command -v ntpd-rs)" ]; then
   cargo install --root /usr/local --git https://github.com/memorysafety/ntpd-rs ntpd
 fi
 
-if ! [ -x "$(command -v watchexec-cli)" ]; then
+if ! [ -x "$(command -v watchexe)" ]; then
   cargo install --root /usr/local --locked watchexec-cli
 fi
 
 cargo install --root /usr/local \
   stylua exa cargo-cache tokei \
-  diskus cargo-edit cargo-update ntpd-rs rtx-cli bat
+  diskus cargo-edit cargo-update rtx-cli bat
 
 rtx_add() {
   rtx plugin add $1
