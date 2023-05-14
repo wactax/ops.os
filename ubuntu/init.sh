@@ -52,9 +52,6 @@ if [ -n "$GFW" ]; then
   pip3 install apt-select --break-system-packages && apt-select --country CN && mv /root/sources.list /etc/apt/ || true
 fi
 
-export GITHUB=https://github.com
-[ $GFW ] && export GITHUB=https://ghproxy.com/$GITHUB
-
 apt-get update &&
   apt-get install -y tzdata zram-config cron smartdns
 
@@ -122,11 +119,17 @@ cargo install --root /usr/local sd
 
 $DIR/zram.sh
 
-cargo install --root /usr/local --git $GITHUB/wacfork/ripgrep.git
+if ! [ -x "$(command -v rg)" ]; then
+  cargo install --root /usr/local --git https://github.com/wacfork/ripgrep.git
+fi
 
-cargo install --root /usr/local --git $GITHUB/memorysafety/ntpd-rs ntpd
+if ! [ -x "$(command -v ntpd-rs)" ]; then
+  cargo install --root /usr/local --git https://github.com/memorysafety/ntpd-rs ntpd
+fi
 
-cargo install --root /usr/local --locked watchexec-cli
+if ! [ -x "$(command -v watchexec-cli)" ]; then
+  cargo install --root /usr/local --locked watchexec-cli
+fi
 
 cargo install --root /usr/local \
   stylua exa cargo-cache tokei \
@@ -164,6 +167,8 @@ if ! [ -x "$(command -v czmod)" ]; then
 fi
 
 export BUN_INSTALL=/opt/bun
+
+[ $CN ] && export GITHUB=https://ghproxy.com/https://github.com
 
 if [ ! -d "$BUN_INSTALL" ]; then
   $CURL https://ghproxy.com/https://raw.githubusercontent.com/oven-sh/bun/main/src/cli/install.sh | bash
