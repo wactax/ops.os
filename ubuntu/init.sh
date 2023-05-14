@@ -88,7 +88,7 @@ apt-get update &&
     libreadline-dev libbz2-dev libsqlite3-dev \
     glances libzstd-dev protobuf-compiler zsh \
     software-properties-common curl wget cmake git-lfs \
-    autoconf automake libtool supervisor
+    autoconf automake libtool supervisor rsyslog
 
 systemctl enable --now supervisor
 git lfs install
