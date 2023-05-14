@@ -170,9 +170,13 @@ export BUN_INSTALL=/opt/bun
 
 [ $CN ] && export GITHUB=https://ghproxy.com/https://github.com
 
-if [ ! -d "$BUN_INSTALL" ]; then
+if [ ! -d "$BUN_INSTALL/bin/bun" ]; then
   $CURL https://ghproxy.com/https://raw.githubusercontent.com/oven-sh/bun/main/src/cli/install.sh | bash
   #$CURL https://bun.sh/install | bash
+fi
+
+if [ ! -f "$BUN_INSTALL/bin/bunx" ]; then
+  ln -s /opt/bun/bin/bun /opt/bun/bin/bunx
 fi
 
 export BUN_INSTALL="/opt/bun"
