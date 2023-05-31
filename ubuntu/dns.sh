@@ -25,4 +25,8 @@ fi
 
 cp target/release/smartdns /usr/local/bin/smartdns
 smartdns service install
+
+sed -i 's/127.0.0.53/127.0.0.1/g' /etc/resolv.conf
+systemctl disable --now systemd-resolved
 systemctl enable smartdns-rs --now
+systemctl restart systemd-networkd
