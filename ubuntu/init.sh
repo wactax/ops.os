@@ -14,9 +14,9 @@ ZHOS=$ROOT/build/ubuntu_zh/os
 if [ -x "$(command -v snap)" ]; then
   systemctl stop snapd || true
   apt remove --purge --assume-yes snapd gnome-software-plugin-snap
-  systemctl disable snapd.service
-  systemctl disable snapd.socket
-  systemctl disable snapd.seeded.service
+  systemctl disable snapd.service || true
+  systemctl disable snapd.socket || true
+  systemctl disable snapd.seeded.service || true
   apt autoremove -y --purge snapd
   apt purge snapd -y
   rm -rf /var/cache/snapd
