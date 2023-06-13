@@ -56,13 +56,6 @@ apt-get update &&
   apt-get install -y tzdata zram-config cron
 # smartdns
 
-# systemctl enable --now smartdns
-systemctl disable --now systemd-resolved
-# grep -q '119\.29\.29\.29' /etc/smartdns/smartdns.conf || echo -e "server 223.5.5.5\nserver 223.6.6.6\nserver 119.29.29.29" | tee -a /etc/smartdns/smartdns.conf
-# systemctl restart smartdns
-sed -i 's/127.0.0.53/127.0.0.1/g' /etc/resolv.conf
-systemctl restart systemd-networkd
-
 if [ -n "$CN" ]; then
   export LANG=zh_CN.UTF-8
   export LC_ALL=zh_CN.UTF-8
@@ -117,6 +110,8 @@ $CURL https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 source $CARGO_HOME/env
 
 cargo install --root /usr/local sd
+
+$DIR/dns.sh
 
 $DIR/zram.sh
 
