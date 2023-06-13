@@ -128,7 +128,7 @@ if ! [ -x "$(command -v watchexec)" ]; then
 fi
 
 cargo install --root /usr/local \
-  stylua exa cargo-cache tokei \
+  stylua exa cargo-cache tokei atuin \
   diskus cargo-edit cargo-update rtx-cli bat
 
 rtx_add() {
