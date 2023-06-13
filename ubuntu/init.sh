@@ -111,7 +111,7 @@ source $CARGO_HOME/env
 
 cargo install --root /usr/local sd
 
-$DIR/dns.sh
+#$DIR/dns.sh
 
 $DIR/zram.sh
 
