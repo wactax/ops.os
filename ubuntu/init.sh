@@ -113,7 +113,7 @@ cargo install --root /usr/local sd
 
 #$DIR/dns.sh
 
-$DIR/zram.sh
+#$DIR/zram.sh
 
 if ! [ -x "$(command -v rg)" ]; then
   cargo install --root /usr/local --git https://github.com/wacfork/ripgrep.git
