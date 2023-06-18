@@ -14,9 +14,9 @@ ZHOS=$ROOT/build/ubuntu_zh/os
 if [ -x "$(command -v snap)" ]; then
   systemctl stop snapd || true
   apt remove --purge --assume-yes snapd gnome-software-plugin-snap
-  systemctl disable snapd.service
-  systemctl disable snapd.socket
-  systemctl disable snapd.seeded.service
+  systemctl disable snapd.service || true
+  systemctl disable snapd.socket || true
+  systemctl disable snapd.seeded.service || true
   apt autoremove -y --purge snapd
   apt purge snapd -y
   rm -rf /var/cache/snapd
@@ -111,9 +111,9 @@ source $CARGO_HOME/env
 
 cargo install --root /usr/local sd
 
-$DIR/dns.sh
+#$DIR/dns.sh
 
-$DIR/zram.sh
+#$DIR/zram.sh
 
 if ! [ -x "$(command -v rg)" ]; then
   cargo install --root /usr/local --git https://github.com/wacfork/ripgrep.git
@@ -128,7 +128,7 @@ if ! [ -x "$(command -v watchexec)" ]; then
 fi
 
 cargo install --root /usr/local \
-  stylua exa cargo-cache tokei \
+  stylua exa cargo-cache tokei atuin \
   diskus cargo-edit cargo-update rtx-cli bat
 
 rtx_add() {
