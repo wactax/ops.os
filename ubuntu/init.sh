@@ -178,7 +178,7 @@ fi
 export BUN_INSTALL="/opt/bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-bun install -g pnpm
+npm install -g pnpm
 
 pnpm install -g neovim npm-check-updates coffeescript node-pre-gyp \
   diff-so-fancy rome@next @antfu/ni prettier \
