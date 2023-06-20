@@ -201,8 +201,8 @@ echo "$PROGNAME: Cloning repositories..."
 if [ ! -d "nginx" ]; then
   wget -c $(curl -s https://api.github.com/repos/nginx/nginx/tags | jq -r ".[0].zipball_url") -O nginx.zip
   unzip nginx.zip
+  mv nginx-nginx-* nginx
 fi
-exit 0
 
 git_clone google/boringssl
 
