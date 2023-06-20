@@ -4,4 +4,4 @@ DIR=$(realpath $0) && DIR=${DIR%/*}
 cd $DIR
 set -ex
 
-docker run --rm -it xxai-nginx
+docker run --rm -it xxai-nginx /bin/bash
