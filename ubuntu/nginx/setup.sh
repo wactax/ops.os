@@ -327,9 +327,11 @@ fi
 
 cp $DIR/nginx.service /lib/systemd/system/
 if [ ! -d "/sys/fs/cgroup/docker" ]; then
-  systemctl daemon-reload
-  systemctl enable nginx --now
-  systemctl status nginx --no-pager
+  if [ -x "$(command -v systemctl)" ]; then
+    systemctl daemon-reload
+    systemctl enable nginx --now
+    systemctl status nginx --no-pager
+  fi
 fi
 
 echo "$PROGNAME: All done!"
