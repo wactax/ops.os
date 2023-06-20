@@ -199,7 +199,7 @@ checkdeps git hg ninja wget patch sed make || error_exit "Install dependencies b
 # Get nginx and boringssl
 echo "$PROGNAME: Cloning repositories..."
 if [ ! -d "nginx" ]; then
-  zip=$(curl -s https://api.github.com/repos/nginx/nginx/tags | jq ".[0].zipball_url") wget -c $zip -O nginx.zip
+  wget -c $(curl -s https://api.github.com/repos/nginx/nginx/tags | jq ".[0].zipball_url") -O nginx.zip
   unzip nginx.zip
 fi
 exit 0
