@@ -322,6 +322,8 @@ if [ ! -d "/etc/nginx/site" ]; then
   cp $DIR/nginx.conf /etc/nginx
 fi
 
+cp nginx.service /lib/systemd/system/
+systemctl daemon-reload
 systemctl enable nginx --now
 systemctl status nginx --no-pager
 

@@ -5,6 +5,3 @@ cd $DIR
 set -ex
 
 apt install -y cmake ninja-build g++ golang libunwind-dev libpcre3-dev zlib1g-dev libxslt1-dev libgd-dev libgeoip-dev
-
-cp nginx.service /lib/systemd/system/
-systemctl daemon-reload
