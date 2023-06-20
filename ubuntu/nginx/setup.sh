@@ -86,7 +86,7 @@ export LUAJIT_INC=/usr/local/src/LuaJIT/include/luajit-2.1
 
 if [ ! -d "$LUAJIT_LIB" ]; then
   cd luajit2
-  make
+  make -j $(nproc) || error_exit "Error compiling luajit2"
   make install PREFIX=/usr/local/src/LuaJIT
   cd ..
 fi
