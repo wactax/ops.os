@@ -22,7 +22,7 @@ fi
 DIR=$(dirname $(realpath "$0"))
 cd $DIR
 
-BUILDDIR="/tmp/nginx-quic"
+BUILDDIR="/tmp/nginx-build"
 
 mkdir -p $BUILDDIR
 
@@ -203,8 +203,11 @@ checkdeps git hg ninja wget patch sed make || error_exit "Install dependencies b
 # Get nginx-quic and boringssl
 echo "$PROGNAME: Cloning repositories..."
 if [ ! -d "nginx-quic" ]; then
-  hg clone -b quic https://hg.nginx.org/nginx-quic $BUILDDIR/nginx-quic || error_exit "Failed to clone nginx-quic."
+  zip=$(curl -s https://api.github.com/repos/nginx/nginx/tags | jq ".[0].zipball_url")
+  wget -c $zip -O nginx-quic.zip
+  unzip nginx-quic.zip
 fi
+exit 0
 
 git_clone google/boringssl
 
