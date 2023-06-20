@@ -2,6 +2,13 @@
 
 set -ex
 
+DIR=$(dirname $(realpath "$0"))
+cd $DIR
+
+if [ -x "$(command -v apt)" ]; then
+  $DIR/_ubuntu.sh
+fi
+
 error_exit() {
   echo -e "${PROGNAME}: ${1:-"Unknown Error"}" >&2
   clean_up
@@ -18,9 +25,6 @@ git_clone() {
 if ! [ -x "$(command -v hg)" ]; then
   pip3 install mercurial
 fi
-
-DIR=$(dirname $(realpath "$0"))
-cd $DIR
 
 BUILDDIR="/tmp/nginx-build"
 
@@ -39,7 +43,7 @@ lua_add lua-resty-core
 lua_add lua-resty-lrucache
 
 # ---------------------------------------------------------------------------
-# nginxquiccompile.sh - Compile nginx-quic with boringssl.
+# nginxquiccompile.sh - Compile nginx with boringssl.
 
 # By i81b4u.
 
@@ -74,10 +78,6 @@ git_clone openresty/luajit2
 git_clone openresty/lua-nginx-module
 git_clone slact/nchan
 git_clone vision5/ngx_devel_kit
-
-if [ -x "$(command -v apt)" ]; then
-  $DIR/_ubuntu.sh
-fi
 
 export LUAJIT_LIB=/usr/local/src/LuaJIT/lib
 export LUAJIT_INC=/usr/local/src/LuaJIT/include/luajit-2.1
@@ -139,7 +139,7 @@ checkdeps() {
 help_message() {
   cat <<-_EOF_
   $PROGNAME ver. $VERSION
-  Compile nginx-quic with boringssl.
+  Compile nginx with boringssl.
 
   $(usage)
 
@@ -190,8 +190,8 @@ checkdeps git hg ninja wget patch sed make || error_exit "Install dependencies b
 # Create empty build environment
 # echo "$PROGNAME: Cleaning up previous build..."
 # if [ -d "$BUILDDIR" ]; then
-#   if [ -d "$BUILDDIR/nginx-quic" ]; then
-#     rm -rf $BUILDDIR/nginx-quic || error_exit "Failed to delete directory $BUILDDIR/nginx-quic"
+#   if [ -d "$BUILDDIR/nginx" ]; then
+#     rm -rf $BUILDDIR/nginx || error_exit "Failed to delete directory $BUILDDIR/nginx"
 #   fi
 #   if [ -d "$BUILDDIR/boringssl" ]; then
 #     rm -rf $BUILDDIR/boringssl || error_exit "Failed to delete directory $BUILDDIR/boringssl"
@@ -200,12 +200,12 @@ checkdeps git hg ninja wget patch sed make || error_exit "Install dependencies b
 #   mkdir $BUILDDIR || error_exit "Failed to create directory $BUILDDIR."
 # fi
 
-# Get nginx-quic and boringssl
+# Get nginx and boringssl
 echo "$PROGNAME: Cloning repositories..."
-if [ ! -d "nginx-quic" ]; then
+if [ ! -d "nginx" ]; then
   zip=$(curl -s https://api.github.com/repos/nginx/nginx/tags | jq ".[0].zipball_url")
-  wget -c $zip -O nginx-quic.zip
-  unzip nginx-quic.zip
+  wget -c $zip -O nginx.zip
+  unzip nginx.zip
 fi
 exit 0
 
@@ -226,8 +226,8 @@ fi
 
 ninja -j$cpu_count || error_exit "Faied to compile boringssl."
 
-# Modifications to boringssl to satisfy nginx-quic
-echo "$PROGNAME: Modifying boringssl for nginx-quic..."
+# Modifications to boringssl to satisfy nginx
+echo "$PROGNAME: Modifying boringssl for nginx..."
 mkdir -p $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to create directory $BUILDDIR/boringssl/.openssl/lib."
 
 rm -rf $BUILDDIR/boringssl/.openssl/include
@@ -242,8 +242,8 @@ chown www-data:www-data /var/log/nginx
 
 # Configure-options like ubuntu
 echo "$PROGNAME: Configure build options..."
-if [ -d "$BUILDDIR/nginx-quic" ]; then
-  cd $BUILDDIR/nginx-quic || error_exit "Failed to make $BUILDDIR/nginx-quic current directory."
+if [ -d "$BUILDDIR/nginx" ]; then
+  cd $BUILDDIR/nginx || error_exit "Failed to make $BUILDDIR/nginx current directory."
   ./auto/configure \
     --user=www-data --group=www-data \
     --prefix=/usr/local/nginx \
@@ -282,12 +282,12 @@ if [ -d "$BUILDDIR/nginx-quic" ]; then
     --add-module=$BUILDDIR/nchan \
     --add-module=$BUILDDIR/ngx_brotli
 else
-  error_exit "Directory $BUILDDIR/nginx-quic does not exist."
+  error_exit "Directory $BUILDDIR/nginx does not exist."
 fi
 
 # Modify nginx http server string (nginx -> i81b4u)
 echo "$PROGNAME: Modify nginx http server string..."
-cd $BUILDDIR/nginx-quic
+cd $BUILDDIR/nginx
 
 sed -i 's@"nginx/"@"-/"@g' src/core/nginx.h
 
@@ -298,13 +298,13 @@ cd ..
 
 # Make and install
 echo "$PROGNAME: Make and install nginx..."
-if [ -d "$BUILDDIR/nginx-quic" ]; then
+if [ -d "$BUILDDIR/nginx" ]; then
   touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h || error_exit "Failed to touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h."
-  cd $BUILDDIR/nginx-quic || error_exit "Failed to make $BUILDDIR/nginx-quic current directory."
+  cd $BUILDDIR/nginx || error_exit "Failed to make $BUILDDIR/nginx current directory."
   make -j $(nproc) || error_exit "Error compiling nginx."
   make install || error_exit "Error installing nginx."
 else
-  error_exit "Directory $BUILDDIR/nginx-quic does not exist."
+  error_exit "Directory $BUILDDIR/nginx does not exist."
 fi
 
 grep -qF -- "www-data " /etc/security/limits.conf || echo -e "\nwww-data soft nofile 252144\nwww-data hard nofile 262144\n" >>/etc/security/limits.conf
