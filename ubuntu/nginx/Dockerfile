@@ -9,7 +9,7 @@ ADD _ubuntu.sh _ubuntu.sh
 RUN ./_ubuntu.sh
 
 RUN apt-get install -y git wget patch make mercurial ninja-build
-RUN apt-get install -y jq curl
+RUN apt-get install -y jq curl unzip
 ADD nginx.service nginx.service
 ADD setup.sh setup.sh
 RUN ./setup.sh
