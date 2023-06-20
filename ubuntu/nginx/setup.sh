@@ -248,7 +248,7 @@ if [ -d "$BUILDDIR/nginx" ]; then
     --lock-path=/var/run/nginx.lock \
     --error-log-path=/var/log/nginx/error.log \
     --http-log-path=/var/log/nginx/access.log \
-    --with-cc-opt="-g0 -O3 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -march=native -pipe -flto -funsafe-math-optimizations --param=ssp-buffer-size=4 -DOPENSSL_IS_BORINGSSL=1 -D_FORTIFY_SOURCE=2 -I$BUILDDIR/boringssl/.openssl/include/" --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC -L$BUILDDIR/boringssl/.openssl/lib/" \
+    --with-cc-opt="-g0 -O3 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -march=native -pipe -flto -funsafe-math-optimizations --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 -I$BUILDDIR/boringssl/.openssl/include/" --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC -L$BUILDDIR/boringssl/.openssl/lib/" \
     --with-pcre-jit \
     --with-http_ssl_module \
     --with-http_stub_status_module \
@@ -304,7 +304,10 @@ fi
 
 grep -qF -- "www-data " /etc/security/limits.conf || echo -e "\nwww-data soft nofile 252144\nwww-data hard nofile 262144\n" >>/etc/security/limits.conf
 grep -qF -- "pam_limits.so" /etc/pam.d/common-session || echo -e "\nsession required pam_limits.so\n" >>/etc/pam.d/common-session
-grep -qF -- "www-data " /etc/sudoers || echo -e "\nwww-data ALL=(root) NOPASSWD: /usr/sbin/service nginx *\n" >>/etc/sudoers
+
+if [ -f "/etc/sudoers" ]; then
+  grep -qF -- "www-data " /etc/sudoers || echo -e "\nwww-data ALL=(root) NOPASSWD: /usr/sbin/service nginx *\n" >>/etc/sudoers
+fi
 
 rm /etc/ld.so.cache
 ldconfig
