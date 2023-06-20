@@ -10,3 +10,5 @@ cpso() {
 }
 
 cpso /usr/sbin/_nginx
+
+rm -rf /so/libc.so.* /so/libm.so.* /so/libz.so.*
