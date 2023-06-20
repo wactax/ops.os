@@ -29,6 +29,6 @@ COPY --from=build /usr/local/src/LuaJIT/lib /usr/local/src/LuaJIT/lib
 RUN mkdir -p /var/log/nginx &&\
 grep -qF -- "root " /etc/security/limits.conf || echo -e "\nwww-data soft nofile 252144\nwww-data hard nofile 262144\n" >>/etc/security/limits.conf 
 
-# ENV LD_LIBRARY_PATH=/lib
-# COPY --from=build /so/ /lib/
+ENV LD_LIBRARY_PATH=/lib
+COPY --from=build /so/ /lib/
 CMD ["/usr/sbin/nginx","-g","daemon off;"]
