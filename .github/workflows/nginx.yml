@@ -6,7 +6,7 @@ on:
     branches: [ main ]
     paths:
       - 'ubuntu/nginx/*'
-
+      - '.github/workflows/nginx.yml'
 jobs:
 
   build:
