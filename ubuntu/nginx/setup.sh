@@ -9,6 +9,10 @@ if [ -x "$(command -v apt)" ]; then
   $DIR/_ubuntu.sh
 fi
 
+clean_up() { # Perform pre-exit housekeeping
+  return
+}
+
 error_exit() {
   echo -e "${PROGNAME}: ${1:-"Unknown Error"}" >&2
   clean_up
@@ -21,10 +25,6 @@ git_clone() {
     git clone --depth=1 --recursive https://github.com/$1.git $BUILDDIR/$dir || error_exit "failed git clone $1"
   fi
 }
-
-if ! [ -x "$(command -v hg)" ]; then
-  pip3 install mercurial
-fi
 
 BUILDDIR="/tmp/nginx-build"
 
@@ -88,10 +88,6 @@ if [ ! -d "$LUAJIT_LIB" ]; then
   make install PREFIX=/usr/local/src/LuaJIT
   cd ..
 fi
-
-clean_up() { # Perform pre-exit housekeeping
-  return
-}
 
 graceful_exit() {
   clean_up
@@ -203,8 +199,7 @@ checkdeps git hg ninja wget patch sed make || error_exit "Install dependencies b
 # Get nginx and boringssl
 echo "$PROGNAME: Cloning repositories..."
 if [ ! -d "nginx" ]; then
-  zip=$(curl -s https://api.github.com/repos/nginx/nginx/tags | jq ".[0].zipball_url")
-  wget -c $zip -O nginx.zip
+  zip=$(curl -s https://api.github.com/repos/nginx/nginx/tags | jq ".[0].zipball_url") wget -c $zip -O nginx.zip
   unzip nginx.zip
 fi
 exit 0
