@@ -248,7 +248,7 @@ if [ -d "$BUILDDIR/nginx" ]; then
     --lock-path=/var/run/nginx.lock \
     --error-log-path=/var/log/nginx/error.log \
     --http-log-path=/var/log/nginx/access.log \
-    --with-cc-opt="-g0 -O3 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -march=native -pipe -flto -funsafe-math-optimizations --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 -I$BUILDDIR/boringssl/.openssl/include/" --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC -L$BUILDDIR/boringssl/.openssl/lib/" \
+    --with-cc-opt="-g0 -O3 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -march=native -pipe -flto -funsafe-math-optimizations --param=ssp-buffer-size=4 -DOPENSSL_IS_BORINGSSL=1 -D_FORTIFY_SOURCE=2 -I$BUILDDIR/boringssl/.openssl/include/" --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC -L$BUILDDIR/boringssl/.openssl/lib/" \
     --with-pcre-jit \
     --with-http_ssl_module \
     --with-http_stub_status_module \
