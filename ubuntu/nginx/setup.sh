@@ -2,6 +2,8 @@
 
 set -ex
 
+NGINX_USER=${NGINX_USER:-"www-data"}
+
 DIR=$(dirname $(realpath "$0"))
 cd $DIR
 
@@ -204,43 +206,43 @@ if [ ! -d "nginx" ]; then
   mv nginx-nginx-* nginx
 fi
 
-git_clone google/boringssl
+# git_clone google/boringssl
+#
+# # Build boringssl
+# echo "$PROGNAME: Building boringssl..."
+# mkdir -p $BUILDDIR/boringssl/build || error_exit "Failed to create directory $BUILDDIR/boringssl/build."
+# cd $BUILDDIR/boringssl/build || error_exit "Failed to make $BUILDDIR/boringssl/build current directory."
+# cmake -GNinja .. || error_exit "Failed to cmake boringssl."
+#
+# cpu_count=$(nproc)
+# if [ $cpu_count -eq 1 ]; then
+#   cpu_count=1
+# else
+#   ((cpu_count = cpu_count - 1))
+# fi
+#
+# ninja -j$cpu_count || error_exit "Faied to compile boringssl."
+#
+# # Modifications to boringssl to satisfy nginx
+# echo "$PROGNAME: Modifying boringssl for nginx..."
+# mkdir -p $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to create directory $BUILDDIR/boringssl/.openssl/lib."
+#
+# rm -rf $BUILDDIR/boringssl/.openssl/include
+# ln -s $BUILDDIR/boringssl/include/ $BUILDDIR/boringssl/.openssl/include || error_exit "Failed to create symlink $BUILDDIR/boringssl/.openssl/include."
+# cp $BUILDDIR/boringssl/build/crypto/libcrypto.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/crypto/libcrypto.a."
+# cp $BUILDDIR/boringssl/build/ssl/libssl.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/ssl/libssl.a."
 
-# Build boringssl
-echo "$PROGNAME: Building boringssl..."
-mkdir -p $BUILDDIR/boringssl/build || error_exit "Failed to create directory $BUILDDIR/boringssl/build."
-cd $BUILDDIR/boringssl/build || error_exit "Failed to make $BUILDDIR/boringssl/build current directory."
-cmake -GNinja .. || error_exit "Failed to cmake boringssl."
-
-cpu_count=$(nproc)
-if [ $cpu_count -eq 1 ]; then
-  cpu_count=1
-else
-  ((cpu_count = cpu_count - 1))
-fi
-
-ninja -j$cpu_count || error_exit "Faied to compile boringssl."
-
-# Modifications to boringssl to satisfy nginx
-echo "$PROGNAME: Modifying boringssl for nginx..."
-mkdir -p $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to create directory $BUILDDIR/boringssl/.openssl/lib."
-
-rm -rf $BUILDDIR/boringssl/.openssl/include
-ln -s $BUILDDIR/boringssl/include/ $BUILDDIR/boringssl/.openssl/include || error_exit "Failed to create symlink $BUILDDIR/boringssl/.openssl/include."
-cp $BUILDDIR/boringssl/build/crypto/libcrypto.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/crypto/libcrypto.a."
-cp $BUILDDIR/boringssl/build/ssl/libssl.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/ssl/libssl.a."
-
-groupadd www-data || true
-useradd www-data -g www-data -s /sbin/nologin -M || true
+groupadd $NGINX_USER || true
+useradd $NGINX_USER -g $NGINX_USER -s /sbin/nologin -M || true
 mkdir -p /var/log/nginx
-chown www-data:www-data /var/log/nginx
+chown $NGINX_USER:$NGINX_USER /var/log/nginx
 
 # Configure-options like ubuntu
 echo "$PROGNAME: Configure build options..."
 if [ -d "$BUILDDIR/nginx" ]; then
   cd $BUILDDIR/nginx || error_exit "Failed to make $BUILDDIR/nginx current directory."
   ./auto/configure \
-    --user=www-data --group=www-data \
+    --user=$NGINX_USER --group=$NGINX_USER \
     --prefix=/usr/local/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
@@ -248,7 +250,7 @@ if [ -d "$BUILDDIR/nginx" ]; then
     --lock-path=/var/run/nginx.lock \
     --error-log-path=/var/log/nginx/error.log \
     --http-log-path=/var/log/nginx/access.log \
-    --with-cc-opt="-g0 -O3 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -march=native -pipe -flto -funsafe-math-optimizations --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 -I$BUILDDIR/boringssl/.openssl/include/" --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC -L$BUILDDIR/boringssl/.openssl/lib/" \
+    --with-cc-opt="-g0 -O3 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -march=native -pipe -flto -funsafe-math-optimizations --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 " --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC " \
     --with-pcre-jit \
     --with-http_ssl_module \
     --with-http_stub_status_module \
@@ -270,12 +272,15 @@ if [ -d "$BUILDDIR/nginx" ]; then
     --with-stream=dynamic --with-stream_ssl_module \
     --with-mail=dynamic \
     --with-mail_ssl_module \
-    --with-openssl=$BUILDDIR/boringssl --with-openssl-opt='enable-tls1_3 enable-ec_nistp_64_gcc_128' \
+    --with-openssl-opt='enable-tls1_3 enable-ec_nistp_64_gcc_128' \
     --add-module=$BUILDDIR/lua-nginx-module \
     --add-module=$BUILDDIR/headers-more-nginx-module \
     --add-module=$BUILDDIR/ngx_devel_kit \
     --add-module=$BUILDDIR/nchan \
     --add-module=$BUILDDIR/ngx_brotli
+  # --with-openssl=$BUILDDIR/boringssl \
+  # -L$BUILDDIR/boringssl/.openssl/lib/
+  # -I$BUILDDIR/boringssl/.openssl/include/
 else
   error_exit "Directory $BUILDDIR/nginx does not exist."
 fi
@@ -294,7 +299,7 @@ cd ..
 # Make and install
 echo "$PROGNAME: Make and install nginx..."
 if [ -d "$BUILDDIR/nginx" ]; then
-  touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h || error_exit "Failed to touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h."
+  # touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h || error_exit "Failed to touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h."
   cd $BUILDDIR/nginx || error_exit "Failed to make $BUILDDIR/nginx current directory."
   make -j $(nproc) || error_exit "Error compiling nginx."
   make install || error_exit "Error installing nginx."
@@ -302,11 +307,11 @@ else
   error_exit "Directory $BUILDDIR/nginx does not exist."
 fi
 
-grep -qF -- "www-data " /etc/security/limits.conf || echo -e "\nwww-data soft nofile 252144\nwww-data hard nofile 262144\n" >>/etc/security/limits.conf
+grep -qF -- "$NGINX_USER " /etc/security/limits.conf || echo -e "\n$NGINX_USER soft nofile 252144\n$NGINX_USER hard nofile 262144\n" >>/etc/security/limits.conf
 grep -qF -- "pam_limits.so" /etc/pam.d/common-session || echo -e "\nsession required pam_limits.so\n" >>/etc/pam.d/common-session
 
 if [ -f "/etc/sudoers" ]; then
-  grep -qF -- "www-data " /etc/sudoers || echo -e "\nwww-data ALL=(root) NOPASSWD: /usr/sbin/service nginx *\n" >>/etc/sudoers
+  grep -qF -- "$NGINX_USER " /etc/sudoers || echo -e "\n$NGINX_USER ALL=(root) NOPASSWD: /usr/sbin/service nginx *\n" >>/etc/sudoers
 fi
 
 rm /etc/ld.so.cache
@@ -320,10 +325,12 @@ if [ ! -d "/etc/nginx/site" ]; then
   cp $DIR/nginx.conf /etc/nginx
 fi
 
-cp nginx.service /lib/systemd/system/
-systemctl daemon-reload
-systemctl enable nginx --now
-systemctl status nginx --no-pager
+cp $DIR/nginx.service /lib/systemd/system/
+if [ ! -d "/sys/fs/cgroup/docker" ]; then
+  systemctl daemon-reload
+  systemctl enable nginx --now
+  systemctl status nginx --no-pager
+fi
 
 echo "$PROGNAME: All done!"
 graceful_exit
