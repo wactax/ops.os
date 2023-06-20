@@ -5,7 +5,7 @@ cd $DIR
 
 set -ex
 
-org=xxai
+org=wactax
 
 for os in $(find ./build/* -maxdepth 0 -type d); do
   os=$(basename $os)
