@@ -10,7 +10,7 @@ RUN ./_ubuntu.sh
 
 ADD nginx.service nginx.service
 ADD setup.sh setup.sh
-RUN ./setup.sh
+# RUN ./setup.sh
 
 
 # FROM ubuntu:23.10

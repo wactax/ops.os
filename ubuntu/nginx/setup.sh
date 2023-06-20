@@ -225,10 +225,10 @@ ninja -j$cpu_count || error_exit "Faied to compile boringssl."
 echo "$PROGNAME: Modifying boringssl for nginx..."
 mkdir -p $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to create directory $BUILDDIR/boringssl/.openssl/lib."
 
-rm -rf $BUILDDIR/boringssl/.openssl/include
-ln -s $BUILDDIR/boringssl/include/ $BUILDDIR/boringssl/.openssl/include || error_exit "Failed to create symlink $BUILDDIR/boringssl/.openssl/include."
-cp $BUILDDIR/boringssl/build/crypto/libcrypto.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/crypto/libcrypto.a."
-cp $BUILDDIR/boringssl/build/ssl/libssl.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/ssl/libssl.a."
+# rm -rf $BUILDDIR/boringssl/.openssl/include
+# ln -s $BUILDDIR/boringssl/include/ $BUILDDIR/boringssl/.openssl/include || error_exit "Failed to create symlink $BUILDDIR/boringssl/.openssl/include."
+# cp $BUILDDIR/boringssl/build/crypto/libcrypto.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/crypto/libcrypto.a."
+# cp $BUILDDIR/boringssl/build/ssl/libssl.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/ssl/libssl.a."
 
 groupadd www-data || true
 useradd www-data -g www-data -s /sbin/nologin -M || true
@@ -294,7 +294,7 @@ cd ..
 # Make and install
 echo "$PROGNAME: Make and install nginx..."
 if [ -d "$BUILDDIR/nginx" ]; then
-  touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h || error_exit "Failed to touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h."
+  # touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h || error_exit "Failed to touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h."
   cd $BUILDDIR/nginx || error_exit "Failed to make $BUILDDIR/nginx current directory."
   make -j $(nproc) || error_exit "Error compiling nginx."
   make install || error_exit "Error installing nginx."
