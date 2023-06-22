@@ -2,6 +2,8 @@
 
 set -ex
 
+VER_LUA_NGINX_MODULE=0.10.24
+
 NGINX_USER=${NGINX_USER:-"www-data"}
 
 DIR=$(dirname $(realpath "$0"))
@@ -23,8 +25,10 @@ error_exit() {
 
 git_clone() {
   dir=$(basename $1)
+  name=$1
+  shift
   if [ ! -d "$dir" ]; then
-    git clone --depth=1 --recursive https://github.com/$1.git $BUILDDIR/$dir || error_exit "failed git clone $1"
+    git clone --depth=1 --recursive https://github.com/$name.git $@ $BUILDDIR/$dir || error_exit "failed git clone $name"
   fi
 }
 
@@ -33,6 +37,8 @@ BUILDDIR="/tmp/nginx-build"
 mkdir -p $BUILDDIR
 
 cd $BUILDDIR
+
+git_clone openresty/lua-nginx-module -b v$VER_LUA_NGINX_MODULE
 
 lua_add() {
   git_clone openresty/$1
@@ -77,7 +83,6 @@ lastVer() {
 git_clone openresty/headers-more-nginx-module
 git_clone google/ngx_brotli
 git_clone openresty/luajit2
-git_clone openresty/lua-nginx-module
 git_clone slact/nchan
 git_clone vision5/ngx_devel_kit
 
