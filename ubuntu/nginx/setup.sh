@@ -323,11 +323,13 @@ rm /etc/ld.so.cache
 ldconfig
 
 mv /usr/sbin/nginx /usr/sbin/_nginx
-cp $DIR/nginx /usr/sbin
+cp $DIR/bin/nginx /usr/sbin
 
-if [ ! -d "/etc/nginx/site" ]; then
-  mkdir -p /etc/nginx/site
-  cp $DIR/nginx.conf /etc/nginx
+if [ ! -d "/etc/nginx/site/.keep" ]; then
+  rm -rf /etc/nginx
+  if [ -d "$DIR/nginx" ]; then
+    cp -R $DIR/nginx /etc/nginx
+  fi
 fi
 
 cp $DIR/nginx.service /lib/systemd/system/

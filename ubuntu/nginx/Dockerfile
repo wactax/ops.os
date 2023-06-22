@@ -8,28 +8,27 @@ ADD _ubuntu.sh .
 
 RUN ./_ubuntu.sh
 
-ADD nginx.service nginx.service
-ADD nginx nginx
 ENV NGINX_USER root
-ADD nginx.conf nginx.conf
+ADD nginx.service nginx.service
+ADD bin bin
 ADD setup.sh .
 
 RUN ./setup.sh
-# ADD cpso.sh .
-# RUN ./cpso.sh
-#
-# FROM ubuntu:23.10
-#
-# COPY --from=build /usr/local/nginx /usr/local/nginx
-# COPY --from=build /etc/nginx /etc/nginx
-# COPY --from=build /usr/sbin/nginx /usr/sbin/nginx
-# COPY --from=build /usr/sbin/_nginx /usr/sbin/_nginx
-# COPY --from=build /usr/local/src/LuaJIT/lib /usr/local/src/LuaJIT/lib
-# COPY --from=build /usr/local/lib/lua/ /usr/local/lib/lua/
-#
-# RUN mkdir -p /var/log/nginx &&\
-# grep -qF -- "root " /etc/security/limits.conf || echo -e "\nwww-data soft nofile 252144\nwww-data hard nofile 262144\n" >>/etc/security/limits.conf 
-#
-# COPY --from=build /so/ /lib/
-# ENV LD_LIBRARY_PATH=/lib
-# CMD ["/usr/sbin/nginx","-g","daemon off;"]
+ADD cpso.sh .
+RUN ./cpso.sh
+
+FROM ubuntu:23.10
+
+COPY --from=build /usr/local/nginx /usr/local/nginx
+COPY --from=build /usr/sbin/nginx /usr/sbin/nginx
+COPY --from=build /usr/sbin/_nginx /usr/sbin/_nginx
+COPY --from=build /usr/local/src/LuaJIT/lib /usr/local/src/LuaJIT/lib
+COPY --from=build /usr/local/lib/lua/ /usr/local/lib/lua/
+
+COPY ./nginx /etc/nginx
+RUN mkdir -p /var/log/nginx &&\
+grep -qF -- "root " /etc/security/limits.conf || echo -e "\nwww-data soft nofile 252144\nwww-data hard nofile 262144\n" >>/etc/security/limits.conf 
+
+COPY --from=build /so/ /lib/
+ENV LD_LIBRARY_PATH=/lib
+CMD ["/usr/sbin/nginx","-g","daemon off;"]
