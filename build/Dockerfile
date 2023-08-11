@@ -42,7 +42,7 @@ cargo-cache -e &&\
 cd $CARGO_HOME &&\
 ln -s ~/.cargo/config .
 
-RUN rtx plugin add nodejs &&\
+RUN \
 rtx install nodejs@latest &&\
 rtx global nodejs@latest &&\
 eval $(rtx env) &&\

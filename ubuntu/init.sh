@@ -132,7 +132,6 @@ cargo install --root /usr/local \
   diskus cargo-edit cargo-update rtx-cli bat
 
 rtx_add() {
-  rtx plugin add $1
   rtx install $1@latest
   rtx global $1@latest
 }
@@ -141,7 +140,7 @@ rtx_add nodejs
 rtx_add golang
 rtx_add lua
 rtx_add python
-rtx list >~/.tool-versions
+rtx list | awk '{print $1 " " $2}' >~/.tool-versions
 
 eval $(rtx env)
 
