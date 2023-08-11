@@ -4,8 +4,8 @@
 let g:coc_data_home = '/etc/vim/coc'
 let g:autoformat_verbosemode=1
 
-let g:python3_host_prog = '/usr/bin/python3'
-let g:python_host_prog = '/usr/bin/python3'
+let g:python3_host_prog = '/root/.local/share/rtx/shims/python'
+let g:python_host_prog = '/root/.local/share/rtx/shims/python'
 source /etc/vim/plug.vim
 
 call plug#begin('/etc/vim/plug')
