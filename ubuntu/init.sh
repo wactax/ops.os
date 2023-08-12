@@ -112,9 +112,10 @@ fi
 export CARGO_HOME=/opt/rust
 export RUSTUP_HOME=/opt/rust
 
-$CURL https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --default-toolchain nightly
+$CURL https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 
 source $CARGO_HOME/env
+rustup default stable
 
 cargo install --root /usr/local sd
 
@@ -301,4 +302,5 @@ apt autoremove -y
 rm /etc/supervisord.conf
 ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf
 
+rustup default nightly
 echo '👌 ✅'
