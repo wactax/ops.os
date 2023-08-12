@@ -34,6 +34,15 @@ do-release-upgrade -f DistUpgradeViewNonInteractive
 dpkg --configure -a
 apt-get install -f -y
 apt-get autoremove -y
+apt-get autoclean -y
+journalctl --vacuum-size=50M
+old_kernels=$(dpkg --list | grep linux-image | awk '{ print $2 }' | sort -V | sed -n '/'`uname -r`'/q;p')
+if [ "$old_kernels" != "" ]; then
+    sudo apt purge -y $old_kernels
+else
+    echo "没有找到旧的内核。"
+fi
+
 ```
 
 ## 安装常用软件
