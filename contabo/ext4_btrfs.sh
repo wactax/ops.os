@@ -19,4 +19,20 @@ wget https://raw.githubusercontent.com/wactax/ops.os/main/contabo/init.btrfs.sh 
 
 chmod +x /mnt/init.btrfs.sh
 
+backup_file="/mnt/etc/fstab.bak"
+fstab_file="/mnt/etc/fstab"
+
+cp $fstab_file $backup_file
+
+awk '
+{
+    if ($2 == "/") {
+        $3="btrfs";
+        $4="defaults,ssd,discard,noatime,compress=zstd:3,space_cache=v2";
+        $5="0";
+        $6="0";
+    }
+    print;
+}' $backup_file > $fstab_file
+
 chroot /mnt /mnt/init.btrfs.sh
