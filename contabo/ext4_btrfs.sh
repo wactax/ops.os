@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -ex
 btrfs-convert /dev/sda3
 
 mount /dev/sda3 /mnt -t btrfs -o defaults,ssd,discard,noatime,compress=zstd:3,space_cache=v2
@@ -12,5 +12,6 @@ mount --make-rslave /mnt/dev
 mount --rbind /sys /mnt/sys
 mount --make-rslave /mnt/sys
 
+rm /mnt/etc/resolv.conf
 cp /etc/resolv.conf /mnt/etc
 chroot /mnt /bin/bash
