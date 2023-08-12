@@ -1,38 +1,42 @@
 #!/usr/bin/env bash
+
 set -ex
-btrfs-convert /dev/sda3
 
-mount /dev/sda3 /mnt -t btrfs -o defaults,ssd,discard,noatime,compress=zstd:3,space_cache=v2
-mount /dev/sda2 /mnt/boot -t ext4 -o defaults,noatime
+DEVICE_ROOT="/dev/sda3"
+DEVICE_BOOT="/dev/sda2"
+MNT="/mnt"
+OPTIONS_BTRFS="defaults,ssd,discard,noatime,compress=zstd:3,space_cache=v2"
 
-mount -t proc /proc /mnt/proc
+btrfs-convert $DEVICE_ROOT
 
-mount --rbind /dev /mnt/dev
-mount --make-rslave /mnt/dev
-mount --rbind /sys /mnt/sys
-mount --make-rslave /mnt/sys
+mount $DEVICE_ROOT $MNT -t btrfs -o $OPTIONS_BTRFS
+mount $DEVICE_BOOT $MNT/boot -t ext4 -o defaults,noatime
 
-rm /mnt/etc/resolv.conf
-cp /etc/resolv.conf /mnt/etc
+for item in proc dev sys; do
+  mount --rbind /$item $MNT/$item
+  [[ "$item" == "dev" || "$item" == "sys" ]] && mount --make-rslave $MNT/$item
+done
 
-wget https://raw.githubusercontent.com/wactax/ops.os/main/contabo/init.btrfs.sh -O /mnt/init.btrfs.sh
+rm $MNT/etc/resolv.conf
+cp /etc/resolv.conf $MNT/etc
 
-chmod +x /mnt/init.btrfs.sh
-
-backup_file="/mnt/etc/fstab.bak"
-fstab_file="/mnt/etc/fstab"
-
+backup_file="$MNT/etc/fstab.bak"
+fstab_file="$MNT/etc/fstab"
 cp $fstab_file $backup_file
 
 awk '
 {
-    if ($2 == "/") {
-        $3="btrfs";
-        $4="defaults,ssd,discard,noatime,compress=zstd:3,space_cache=v2";
-        $5="0";
-        $6="0";
-    }
-    print;
-}' $backup_file > $fstab_file
+  if ($2 == "/") {
+    $1="'$DEVICE_ROOT'";
+    $3="btrfs";
+    $4="'$OPTIONS_BTRFS'";
+    $5="0";
+    $6="0";
+  }
+  print;
+}' $backup_file >$fstab_file
 
-chroot /mnt /mnt/init.btrfs.sh
+wget https://raw.githubusercontent.com/wactax/ops.os/main/contabo/init.btrfs.sh -O $MNT/init.btrfs.sh
+chmod +x $MNT/init.btrfs.sh
+
+chroot $MNT $MNT/init.btrfs.sh
