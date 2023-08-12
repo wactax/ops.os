@@ -5,9 +5,7 @@ ROOT=$(dirname $DIR)
 cd $DIR
 set -ex
 
-if [ -x "$(command -v enable_ipv6)" ]; then
-enable_ipv6
-fi
+enable_ipv6 || true
 
 export DEBIAN_FRONTEND=noninteractive
 export PNPM_HOME=/opt/pnpm
