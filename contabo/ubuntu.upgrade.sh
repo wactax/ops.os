@@ -12,4 +12,3 @@ old_kernels=$(dpkg --list | grep linux-image | awk '{ print $2 }' | sort -V | se
 if [ "$old_kernels" != "" ]; then
   sudo apt purge -y $old_kernels
 fi
-enable_ipv6
