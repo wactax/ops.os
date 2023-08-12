@@ -34,6 +34,5 @@ grub-install /dev/sda
 然后重启，进入系统
 apt install -y btrfs-progs
 btrfs subvolume delete /ext2_saved
-btrfs filesystem defrag -v -r -f /
 btrfs filesystem defragment -r -v -czstd / > /dev/null
 btrfs balance start -m /
