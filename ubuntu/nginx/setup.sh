@@ -332,6 +332,11 @@ if [ ! -d "/etc/nginx/site/.keep" ]; then
   fi
 fi
 
+CPU_NUM=$(nproc)
+CPU_HALF=$((CPU_NUM / 2))
+[ $CPU_HALF -lt 1 ] && CPU_HALF=1
+sed -i "s/worker_processes *[0-9]*;/worker_processes $CPU_HALF;/" /etc/nginx/nginx.conf
+
 cp $DIR/nginx.service /lib/systemd/system/
 if [ ! -d "/sys/fs/cgroup/docker" ]; then
   if [ -x "$(command -v systemctl)" ]; then
