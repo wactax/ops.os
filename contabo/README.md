@@ -6,22 +6,17 @@
 
 ## 如何把根分区从 ext4 转为 btrfs
 
-btrfs-convert /dev/sda3
+如果不是干净的系统，可以先重装
 
-mount /dev/sda3 /mnt -t btrfs -o defaults,ssd,discard,noatime,compress=zstd:3,space_cache=v2
-mount /dev/sda2 /mnt/boot -t ext4 -o defaults,noatime
+![](https://pub-b8db533c86124200a9d799bf3ba88099.r2.dev/2023/08/LsAN4pZ.webp)
 
-mount -t proc /proc /mnt/proc
+然后进入救援系统 (参考 [System Rescue CD: First Steps](https://contabo.com/blog/system-rescue-cd-first-steps))
 
-mount --rbind /dev /mnt/dev
-mount --make-rslave /mnt/dev
-mount --rbind /sys /mnt/sys
-mount --make-rslave /mnt/sys
+![](https://pub-b8db533c86124200a9d799bf3ba88099.r2.dev/2023/08/XlYH1Je.webp)
 
-cp /etc/resolv.conf /mnt/etc
-chroot /mnt /bin/bash
+系统选 Debian Rescue (recommended)
 
-apt install -y dnf
+![](https://pub-b8db533c86124200a9d799bf3ba88099.r2.dev/2023/08/Wa2HdD1.webp)
 
 编辑 /etc/grub.d/00_header
 
