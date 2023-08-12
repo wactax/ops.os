@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-apt install -y dnf
+apt install -y dnf btrfs-progs
 
 btrfs-convert /dev/sda3
 
