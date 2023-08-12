@@ -6,6 +6,8 @@
 
 ## 如何把根分区从 ext4 转为 btrfs
 
+btrfs-convert /dev/sda3
+
 mount /dev/sda3 /mnt -t btrfs -o defaults,ssd,discard,noatime,compress=zstd:3,space_cache=v2
 mount /dev/sda2 /mnt/boot -t ext4 -o defaults,noatime
 
