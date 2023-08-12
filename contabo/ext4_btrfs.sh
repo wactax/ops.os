@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-apt install -y dnf btrfs-progs
-
 btrfs-convert /dev/sda3
 
 mount /dev/sda3 /mnt -t btrfs -o defaults,ssd,discard,noatime,compress=zstd:3,space_cache=v2
