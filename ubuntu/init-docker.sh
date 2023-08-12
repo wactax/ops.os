@@ -5,7 +5,7 @@ sudo apt-get update
 #mirror="--mirror AzureChinaCloud"
 #fi
 #curl -fsSL https://get.docker.com | sudo bash -s docker $mirror
-pip3 install --force-reinstall PyYAML==5.4.1
+pip3 install --force-reinstall PyYAML==5.3.1
 curl -fsSL https://get.docker.com | sudo bash -s docker
 sudo systemctl start docker
 sudo systemctl enable docker
