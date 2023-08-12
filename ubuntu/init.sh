@@ -5,11 +5,16 @@ ROOT=$(dirname $DIR)
 cd $DIR
 set -ex
 
-enable_ipv6 || true
-
 export DEBIAN_FRONTEND=noninteractive
 export PNPM_HOME=/opt/pnpm
 export PATH=$PNPM_HOME:$PATH
+export RTX_DATA_DIR=/opt/rtx
+export RTX_CACHE_DIR=/cache/rtx
+
+mkdir -p $RTX_DATA_DIR
+mkdir -p $RTX_CACHE_DIR
+
+enable_ipv6 || true
 
 ZHOS=$ROOT/build/ubuntu_zh/os
 

@@ -12,6 +12,8 @@ export GOPATH=/usr
 export PAGER=bat
 export PNPM_HOME="/opt/pnpm"
 export PATH="$PNPM_HOME:$PATH"
+export RTX_DATA_DIR=/opt/rtx
+export RTX_CACHE_DIR=/cache/rtx
 
 . /opt/rust/env
 
