@@ -17,8 +17,8 @@ cp /etc/resolv.conf /mnt/etc
 
 wget https://raw.githubusercontent.com/wactax/ops.os/main/contabo/btrfs.init.sh -O /mnt/btrfs.init.sh
 
-chmod +x /mnt/btrfs.init.sh
+chmod +x /mnt/init.btrfs.sh
 
-chroot /mnt /mnt/btrfs.init.sh
+chroot /mnt /mnt/init.btrfs.sh
 
 reboot
