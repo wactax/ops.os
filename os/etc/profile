@@ -15,8 +15,7 @@ export PATH="$PNPM_HOME:$PATH"
 export RTX_DATA_DIR=/opt/rtx
 export RTX_CACHE_DIR=/cache/rtx
 
-. /opt/rust/env
 
-eval "$(rtx activate --quiet bash)"
+eval $(rtx env)
 
 /etc/run_dir.sh /etc/profile.d

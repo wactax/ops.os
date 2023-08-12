@@ -2,7 +2,6 @@
 
 setopt +o nomatch
 
-eval $(rtx env)
 
 [ -z "$PS1" ] && return
 
