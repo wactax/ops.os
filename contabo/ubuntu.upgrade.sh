@@ -6,6 +6,7 @@ dpkg --configure -a
 apt-get install -f -y
 apt-get autoremove -y
 apt-get autoclean -y
+apt clean -y
 journalctl --vacuum-size=50M
 old_kernels=$(dpkg --list | grep linux-image | awk '{ print $2 }' | sort -V | sed -n '/'$(uname -r)'/q;p')
 if [ "$old_kernels" != "" ]; then
