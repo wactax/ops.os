@@ -25,3 +25,10 @@ bash <(curl -s https://raw.githubusercontent.com/wactax/ops.os/main/contabo/ext4
 ```
 
 即可
+
+## 升级 ubuntu 到 23
+
+```
+sed -i 's/Prompt=LTS/Prompt=normal/i' /etc/update-manager/release-upgrades
+yes|do-release-upgrade
+```
