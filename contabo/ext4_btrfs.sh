@@ -39,4 +39,4 @@ awk '
 wget https://raw.githubusercontent.com/wactax/ops.os/main/contabo/init.btrfs.sh -O $MNT/init.btrfs.sh
 chmod +x $MNT/init.btrfs.sh
 
-chroot $MNT $MNT/init.btrfs.sh
+chroot $MNT /init.btrfs.sh
