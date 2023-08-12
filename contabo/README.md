@@ -26,6 +26,8 @@ bash <(curl -s https://raw.githubusercontent.com/wactax/ops.os/main/contabo/ext4
 
 即可
 
+[使用 Btrfs 快照进行增量备份](https://linux.cn/article-12653-1.html)
+
 ## 升级 ubuntu 到 23
 
 ```
