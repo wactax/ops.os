@@ -18,6 +18,8 @@
 
 ![](https://pub-b8db533c86124200a9d799bf3ba88099.r2.dev/2023/08/Wa2HdD1.webp)
 
+bash <(curl -s https://raw.githubusercontent.com/wactax/ops.os/main/contabo/ext4_btrfs.sh)
+
 编辑 /etc/grub.d/00_header
 
 注释掉
