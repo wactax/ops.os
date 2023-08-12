@@ -21,4 +21,4 @@ chmod +x /mnt/btrfs.init.sh
 
 chroot /mnt /mnt/btrfs.init.sh
 
-#chroot /mnt /bin/bash
+reboot

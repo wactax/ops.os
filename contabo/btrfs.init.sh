@@ -7,6 +7,7 @@ update-grub
 grub-install /dev/sda
 apt install -y btrfs-progs
 btrfs subvolume delete /ext2_saved || true
-btrfs filesystem defragment -r -v -czstd / >/dev/null
+btrfs filesystem defragment -r -v -f -czstd / >/dev/null
 btrfs balance start -m /
-reboot
+rm $(realpath $0)
+exit
