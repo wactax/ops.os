@@ -1,5 +1,11 @@
 # contabo 配置备忘
 
+## 设置主机名
+
+```
+hostnamectl set-hostname u3
+```
+
 ## 测试磁盘性能
 
 [disk.sysbench.sh](./disk.sysbench.sh)
