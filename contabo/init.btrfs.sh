@@ -10,4 +10,3 @@ btrfs subvolume delete /ext2_saved || true
 btrfs filesystem defragment -r -v -f -czstd / >/dev/null
 btrfs balance start -m /
 rm $(realpath $0)
-exit

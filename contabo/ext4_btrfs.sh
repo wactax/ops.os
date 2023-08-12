@@ -20,5 +20,3 @@ wget https://raw.githubusercontent.com/wactax/ops.os/main/contabo/init.btrfs.sh 
 chmod +x /mnt/init.btrfs.sh
 
 chroot /mnt /mnt/init.btrfs.sh
-
-reboot

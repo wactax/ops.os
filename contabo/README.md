@@ -20,6 +20,8 @@
 
 ```
 bash <(curl -s https://raw.githubusercontent.com/wactax/ops.os/main/contabo/ext4_btrfs.sh)
+exit
+reboot
 ```
 
 即可
