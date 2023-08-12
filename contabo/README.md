@@ -36,7 +36,9 @@ bash <(curl -s https://raw.githubusercontent.com/wactax/ops.os/main/contabo/ext4
 
 ## 升级 ubuntu 到 23
 
-[ubuntu.upgrade.sh](./ubuntu.upgrade.sh)
+```
+bash <(curl -s https://ghproxy.com/https://raw.githubusercontent.com/wactax/ops.os/main/contabo/ubuntu.upgrade.sh)
+```
 
 ## 安装常用软件
 
