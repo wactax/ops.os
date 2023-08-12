@@ -30,5 +30,14 @@ bash <(curl -s https://raw.githubusercontent.com/wactax/ops.os/main/contabo/ext4
 
 ```
 sed -i 's/Prompt=LTS/Prompt=normal/i' /etc/update-manager/release-upgrades
-yes|do-release-upgrade
+do-release-upgrade -f DistUpgradeViewNonInteractive
+dpkg --configure -a
+apt-get install -f -y
+apt-get autoremove -y
+```
+
+## 安装常用软件
+
+```
+CN=1 bash <(curl -s https://ghproxy.com/https://raw.githubusercontent.com/wactax/ops.os/main/ubuntu/boot.sh)
 ```
