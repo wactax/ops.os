@@ -14,4 +14,7 @@ mount --make-rslave /mnt/sys
 
 rm /mnt/etc/resolv.conf
 cp /etc/resolv.conf /mnt/etc
+
+wget https://raw.githubusercontent.com/wactax/ops.os/main/contabo/btrfs.sh -O /mnt/btrfs.sh
+
 chroot /mnt /bin/bash
