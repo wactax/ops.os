@@ -301,4 +301,12 @@ service sshd reload || service ssh reload
 apt autoremove -y
 
 rustup default nightly
+
+journal_max_use=40M
+journal_keep_free=10%
+cp /etc/systemd/journald.conf /etc/systemd/journald.conf.bak
+sed -i "s/^#*SystemMaxUse=.*/SystemMaxUse=${journal_max_use}/" /etc/systemd/journald.conf
+sed -i "s/^#*SystemKeepFree=.*/SystemKeepFree=${journal_keep_free}/" /etc/systemd/journald.conf
+systemctl restart systemd-journald
+
 echo '👌 ✅'
