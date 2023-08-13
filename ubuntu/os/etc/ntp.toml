@@ -1,15 +1,17 @@
 log-filter = "info"
 
 [[peers]]
-address = "pool.ntp.org"
-mode = "pool"
-count = 4
-
-[[peers]]
 mode = "nts"
 address = "time.cloudflare.com:4460"
 
+[[peers]]
+mode = "nts"
+address = "nts.sth1.ntp.se:4460"
+
+[[peers]]
+mode = "nts"
+address = "nts.sth2.ntp.se:4460"
+
 [system]
 min-intersection-survivors = 3
-panic-threshold = 10
 startup-panic-threshold = { forward = 60, backward = 0 }
