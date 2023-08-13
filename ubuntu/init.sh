@@ -252,6 +252,7 @@ gfw_git
 useradd -s /usr/sbin/nologin -M ntpd-rs || true
 systemctl daemon-reload && systemctl daemon-reexec
 systemctl enable --now ntpd-rs
+systemctl restart ntpd-rs
 
 # 内存小于1GB不装 docker
 mesize=$(cat /proc/meminfo | grep -oP '^MemTotal:\s+\K\d+' /proc/meminfo)
