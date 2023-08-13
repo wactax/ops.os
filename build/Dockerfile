@@ -82,8 +82,7 @@ RUN curl https://bun.sh/install | bash
 RUN ln -s /usr/bin/gist-paste /usr/bin/gist &&\
 cd /usr/local && \
 wget https://cdn.jsdelivr.net/gh/junegunn/fzf/install -O fzf.install.sh &&\
-bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~ &&\
-echo 'PATH=/opt/rust/bin:$PATH' >> /etc/profile.d/path.sh
+bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~ 
 
 COPY os/root /root
 

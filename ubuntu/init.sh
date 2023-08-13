@@ -202,8 +202,7 @@ fi
 
 cd /usr/local &&
   wget https://cdn.jsdelivr.net/gh/junegunn/fzf/install -O fzf.install.sh &&
-  yes | bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~ &&
-  echo 'PATH=/opt/rust/bin:$PATH' >>/etc/profile.d/path.sh
+  yes | bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~
 
 rsync -avI $ROOT/os/root/ /root
 

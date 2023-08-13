@@ -4,7 +4,7 @@ if [[ ":$LD_LIBRARY_PATH:" != *":/usr/local/lib:"* ]]; then
   export LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH}"
 fi
 
-export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/bun/bin
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/bun/bin:/opt/rust/bin
 export BUN_INSTALL=/opt/bun
 export RUSTUP_HOME=/opt/rust
 export CARGO_HOME=/opt/rust
