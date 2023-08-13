@@ -244,6 +244,7 @@ if [ ! -f "$ssh_ed25519" ]; then
 fi
 
 cd /
+rm /etc/supervisord.conf
 rsync -avI $ROOT/os/ /
 rsync -avI $DIR/os/ /
 
@@ -298,9 +299,6 @@ sed -i "s/#ClientAliveInterval 0/ClientAliveInterval 60/g" /etc/ssh/sshd_config
 sed -i "s/#ClientAliveCountMax 3/ClientAliveCountMax 3/g" /etc/ssh/sshd_config
 service sshd reload || service ssh reload
 apt autoremove -y
-
-rm /etc/supervisord.conf
-ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf
 
 rustup default nightly
 echo '👌 ✅'
