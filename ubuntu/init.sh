@@ -14,7 +14,7 @@ export RTX_CACHE_DIR=/cache/rtx
 mkdir -p $RTX_DATA_DIR
 mkdir -p $RTX_CACHE_DIR
 
-enable_ipv6 || true
+./ipv6.sh
 
 ZHOS=$ROOT/build/ubuntu_zh/os
 
