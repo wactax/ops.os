@@ -2,6 +2,21 @@
 
 set -ex
 
+VER_LUA_NGINX_MODULE=0.10.25
+
+NGINX_USER=${NGINX_USER:-"www-data"}
+
+DIR=$(dirname $(realpath "$0"))
+cd $DIR
+
+if [ -x "$(command -v apt)" ]; then
+  $DIR/_ubuntu.sh
+fi
+
+clean_up() { # Perform pre-exit housekeeping
+  return
+}
+
 error_exit() {
   echo -e "${PROGNAME}: ${1:-"Unknown Error"}" >&2
   clean_up
@@ -10,23 +25,20 @@ error_exit() {
 
 git_clone() {
   dir=$(basename $1)
+  name=$1
+  shift
   if [ ! -d "$dir" ]; then
-    git clone --depth=1 --recursive https://github.com/$1.git $BUILDDIR/$dir || error_exit "failed git clone $1"
+    git clone --depth=1 --recursive https://github.com/$name.git $@ $BUILDDIR/$dir || error_exit "failed git clone $name"
   fi
 }
 
-if ! [ -x "$(command -v hg)" ]; then
-  pip3 install mercurial
-fi
-
-DIR=$(dirname $(realpath "$0"))
-cd $DIR
-
-BUILDDIR="/tmp/nginx-quic"
+BUILDDIR="/tmp/nginx-build"
 
 mkdir -p $BUILDDIR
 
 cd $BUILDDIR
+
+git_clone openresty/lua-nginx-module -b v$VER_LUA_NGINX_MODULE
 
 lua_add() {
   git_clone openresty/$1
@@ -39,7 +51,7 @@ lua_add lua-resty-core
 lua_add lua-resty-lrucache
 
 # ---------------------------------------------------------------------------
-# nginxquiccompile.sh - Compile nginx-quic with boringssl.
+# nginxquiccompile.sh - Compile nginx with boringssl.
 
 # By i81b4u.
 
@@ -71,27 +83,18 @@ lastVer() {
 git_clone openresty/headers-more-nginx-module
 git_clone google/ngx_brotli
 git_clone openresty/luajit2
-git_clone openresty/lua-nginx-module
 git_clone slact/nchan
 git_clone vision5/ngx_devel_kit
-
-if [ -x "$(command -v apt)" ]; then
-  $DIR/_ubuntu.sh
-fi
 
 export LUAJIT_LIB=/usr/local/src/LuaJIT/lib
 export LUAJIT_INC=/usr/local/src/LuaJIT/include/luajit-2.1
 
 if [ ! -d "$LUAJIT_LIB" ]; then
   cd luajit2
-  make
+  make -j $(nproc) || error_exit "Error compiling luajit2"
   make install PREFIX=/usr/local/src/LuaJIT
   cd ..
 fi
-
-clean_up() { # Perform pre-exit housekeeping
-  return
-}
 
 graceful_exit() {
   clean_up
@@ -139,7 +142,7 @@ checkdeps() {
 help_message() {
   cat <<-_EOF_
   $PROGNAME ver. $VERSION
-  Compile nginx-quic with boringssl.
+  Compile nginx with boringssl.
 
   $(usage)
 
@@ -190,8 +193,8 @@ checkdeps git hg ninja wget patch sed make || error_exit "Install dependencies b
 # Create empty build environment
 # echo "$PROGNAME: Cleaning up previous build..."
 # if [ -d "$BUILDDIR" ]; then
-#   if [ -d "$BUILDDIR/nginx-quic" ]; then
-#     rm -rf $BUILDDIR/nginx-quic || error_exit "Failed to delete directory $BUILDDIR/nginx-quic"
+#   if [ -d "$BUILDDIR/nginx" ]; then
+#     rm -rf $BUILDDIR/nginx || error_exit "Failed to delete directory $BUILDDIR/nginx"
 #   fi
 #   if [ -d "$BUILDDIR/boringssl" ]; then
 #     rm -rf $BUILDDIR/boringssl || error_exit "Failed to delete directory $BUILDDIR/boringssl"
@@ -200,49 +203,51 @@ checkdeps git hg ninja wget patch sed make || error_exit "Install dependencies b
 #   mkdir $BUILDDIR || error_exit "Failed to create directory $BUILDDIR."
 # fi
 
-# Get nginx-quic and boringssl
+# Get nginx and boringssl
 echo "$PROGNAME: Cloning repositories..."
-if [ ! -d "nginx-quic" ]; then
-  hg clone -b quic https://hg.nginx.org/nginx-quic $BUILDDIR/nginx-quic || error_exit "Failed to clone nginx-quic."
+if [ ! -d "nginx" ]; then
+  wget -c $(curl -s https://api.github.com/repos/nginx/nginx/tags | jq -r ".[0].zipball_url") -O nginx.zip
+  unzip nginx.zip
+  mv nginx-nginx-* nginx
 fi
 
-git_clone google/boringssl
+# git_clone google/boringssl
+#
+# # Build boringssl
+# echo "$PROGNAME: Building boringssl..."
+# mkdir -p $BUILDDIR/boringssl/build || error_exit "Failed to create directory $BUILDDIR/boringssl/build."
+# cd $BUILDDIR/boringssl/build || error_exit "Failed to make $BUILDDIR/boringssl/build current directory."
+# cmake -GNinja .. || error_exit "Failed to cmake boringssl."
+#
+# cpu_count=$(nproc)
+# if [ $cpu_count -eq 1 ]; then
+#   cpu_count=1
+# else
+#   ((cpu_count = cpu_count - 1))
+# fi
+#
+# ninja -j$cpu_count || error_exit "Faied to compile boringssl."
+#
+# # Modifications to boringssl to satisfy nginx
+# echo "$PROGNAME: Modifying boringssl for nginx..."
+# mkdir -p $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to create directory $BUILDDIR/boringssl/.openssl/lib."
+#
+# rm -rf $BUILDDIR/boringssl/.openssl/include
+# ln -s $BUILDDIR/boringssl/include/ $BUILDDIR/boringssl/.openssl/include || error_exit "Failed to create symlink $BUILDDIR/boringssl/.openssl/include."
+# cp $BUILDDIR/boringssl/build/crypto/libcrypto.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/crypto/libcrypto.a."
+# cp $BUILDDIR/boringssl/build/ssl/libssl.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/ssl/libssl.a."
 
-# Build boringssl
-echo "$PROGNAME: Building boringssl..."
-mkdir -p $BUILDDIR/boringssl/build || error_exit "Failed to create directory $BUILDDIR/boringssl/build."
-cd $BUILDDIR/boringssl/build || error_exit "Failed to make $BUILDDIR/boringssl/build current directory."
-cmake -GNinja .. || error_exit "Failed to cmake boringssl."
-
-cpu_count=$(nproc)
-if [ $cpu_count -eq 1 ]; then
-  cpu_count=1
-else
-  ((cpu_count = cpu_count - 1))
-fi
-
-ninja -j$cpu_count || error_exit "Faied to compile boringssl."
-
-# Modifications to boringssl to satisfy nginx-quic
-echo "$PROGNAME: Modifying boringssl for nginx-quic..."
-mkdir -p $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to create directory $BUILDDIR/boringssl/.openssl/lib."
-
-rm -rf $BUILDDIR/boringssl/.openssl/include
-ln -s $BUILDDIR/boringssl/include/ $BUILDDIR/boringssl/.openssl/include || error_exit "Failed to create symlink $BUILDDIR/boringssl/.openssl/include."
-cp $BUILDDIR/boringssl/build/crypto/libcrypto.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/crypto/libcrypto.a."
-cp $BUILDDIR/boringssl/build/ssl/libssl.a $BUILDDIR/boringssl/.openssl/lib || error_exit "Failed to copy file $BUILDDIR/boringssl/build/ssl/libssl.a."
-
-groupadd www-data || true
-useradd www-data -g www-data -s /sbin/nologin -M || true
+groupadd $NGINX_USER || true
+useradd $NGINX_USER -g $NGINX_USER -s /sbin/nologin -M || true
 mkdir -p /var/log/nginx
-chown www-data:www-data /var/log/nginx
+chown $NGINX_USER:$NGINX_USER /var/log/nginx
 
 # Configure-options like ubuntu
 echo "$PROGNAME: Configure build options..."
-if [ -d "$BUILDDIR/nginx-quic" ]; then
-  cd $BUILDDIR/nginx-quic || error_exit "Failed to make $BUILDDIR/nginx-quic current directory."
+if [ -d "$BUILDDIR/nginx" ]; then
+  cd $BUILDDIR/nginx || error_exit "Failed to make $BUILDDIR/nginx current directory."
   ./auto/configure \
-    --user=www-data --group=www-data \
+    --user=$NGINX_USER --group=$NGINX_USER \
     --prefix=/usr/local/nginx \
     --sbin-path=/usr/sbin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
@@ -250,7 +255,7 @@ if [ -d "$BUILDDIR/nginx-quic" ]; then
     --lock-path=/var/run/nginx.lock \
     --error-log-path=/var/log/nginx/error.log \
     --http-log-path=/var/log/nginx/access.log \
-    --with-cc-opt="-g0 -O3 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -march=native -pipe -flto -funsafe-math-optimizations --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 -I$BUILDDIR/boringssl/.openssl/include/" --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC -L$BUILDDIR/boringssl/.openssl/lib/" \
+    --with-cc-opt="-g0 -O3 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -march=native -pipe -flto -funsafe-math-optimizations --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2 " --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -fPIC " \
     --with-pcre-jit \
     --with-http_ssl_module \
     --with-http_stub_status_module \
@@ -272,19 +277,22 @@ if [ -d "$BUILDDIR/nginx-quic" ]; then
     --with-stream=dynamic --with-stream_ssl_module \
     --with-mail=dynamic \
     --with-mail_ssl_module \
-    --with-openssl=$BUILDDIR/boringssl --with-openssl-opt='enable-tls1_3 enable-ec_nistp_64_gcc_128' \
+    --with-openssl-opt='enable-tls1_3 enable-ec_nistp_64_gcc_128' \
     --add-module=$BUILDDIR/lua-nginx-module \
     --add-module=$BUILDDIR/headers-more-nginx-module \
     --add-module=$BUILDDIR/ngx_devel_kit \
     --add-module=$BUILDDIR/nchan \
     --add-module=$BUILDDIR/ngx_brotli
+  # --with-openssl=$BUILDDIR/boringssl \
+  # -L$BUILDDIR/boringssl/.openssl/lib/
+  # -I$BUILDDIR/boringssl/.openssl/include/
 else
-  error_exit "Directory $BUILDDIR/nginx-quic does not exist."
+  error_exit "Directory $BUILDDIR/nginx does not exist."
 fi
 
 # Modify nginx http server string (nginx -> i81b4u)
 echo "$PROGNAME: Modify nginx http server string..."
-cd $BUILDDIR/nginx-quic
+cd $BUILDDIR/nginx
 
 sed -i 's@"nginx/"@"-/"@g' src/core/nginx.h
 
@@ -295,32 +303,48 @@ cd ..
 
 # Make and install
 echo "$PROGNAME: Make and install nginx..."
-if [ -d "$BUILDDIR/nginx-quic" ]; then
-  touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h || error_exit "Failed to touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h."
-  cd $BUILDDIR/nginx-quic || error_exit "Failed to make $BUILDDIR/nginx-quic current directory."
+if [ -d "$BUILDDIR/nginx" ]; then
+  # touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h || error_exit "Failed to touch $BUILDDIR/boringssl/.openssl/include/openssl/ssl.h."
+  cd $BUILDDIR/nginx || error_exit "Failed to make $BUILDDIR/nginx current directory."
   make -j $(nproc) || error_exit "Error compiling nginx."
   make install || error_exit "Error installing nginx."
 else
-  error_exit "Directory $BUILDDIR/nginx-quic does not exist."
+  error_exit "Directory $BUILDDIR/nginx does not exist."
 fi
 
-grep -qF -- "www-data " /etc/security/limits.conf || echo -e "\nwww-data soft nofile 252144\nwww-data hard nofile 262144\n" >>/etc/security/limits.conf
+grep -qF -- "$NGINX_USER " /etc/security/limits.conf || echo -e "\n$NGINX_USER soft nofile 252144\n$NGINX_USER hard nofile 262144\n" >>/etc/security/limits.conf
 grep -qF -- "pam_limits.so" /etc/pam.d/common-session || echo -e "\nsession required pam_limits.so\n" >>/etc/pam.d/common-session
-grep -qF -- "www-data " /etc/sudoers || echo -e "\nwww-data ALL=(root) NOPASSWD: /usr/sbin/service nginx *\n" >>/etc/sudoers
+
+if [ -f "/etc/sudoers" ]; then
+  grep -qF -- "$NGINX_USER " /etc/sudoers || echo -e "\n$NGINX_USER ALL=(root) NOPASSWD: /usr/sbin/service nginx *\n" >>/etc/sudoers
+fi
 
 rm /etc/ld.so.cache
 ldconfig
 
 mv /usr/sbin/nginx /usr/sbin/_nginx
-cp $DIR/nginx /usr/sbin
+cp $DIR/bin/nginx /usr/sbin
 
-if [ ! -d "/etc/nginx/site" ]; then
-  mkdir -p /etc/nginx/site
-  cp $DIR/nginx.conf /etc/nginx
+if [ ! -d "/etc/nginx/site/.keep" ]; then
+  rm -rf /etc/nginx
+  if [ -d "$DIR/nginx" ]; then
+    cp -R $DIR/nginx /etc/nginx
+  fi
 fi
 
-systemctl enable nginx --now
-systemctl status nginx --no-pager
+CPU_NUM=$(nproc)
+CPU_HALF=$((CPU_NUM / 2))
+[ $CPU_HALF -lt 1 ] && CPU_HALF=1
+sed -i "s/worker_processes *[0-9]*;/worker_processes $CPU_HALF;/" /etc/nginx/nginx.conf
+
+cp $DIR/nginx.service /lib/systemd/system/
+if [ ! -d "/sys/fs/cgroup/docker" ]; then
+  if [ -x "$(command -v systemctl)" ]; then
+    systemctl daemon-reload
+    systemctl enable nginx --now
+    systemctl status nginx --no-pager
+  fi
+fi
 
 echo "$PROGNAME: All done!"
 graceful_exit

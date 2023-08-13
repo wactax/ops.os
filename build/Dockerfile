@@ -34,7 +34,7 @@ RUN \
 source $CARGO_HOME/env &&\
 cargo install --root /usr/local --locked watchexec-cli &&\
 cargo install --root /usr/local --git https://github.com/wacfork/ripgrep.git &&\
-cargo install --root /usr/local stylua erdtree cargo-cache sd tokei diskus cargo-edit cargo-update rtx-cli wasm-bindgen-cli wasm-pack exa &&\
+cargo install --root /usr/local stylua erdtree cargo-cache sd tokei diskus cargo-edit cargo-update rtx-cli wasm-bindgen-cli wasm-pack exa atuin &&\
 rm -rf $CARGO_HOME/registry &&\
 rustup target add wasm32-unknown-unknown &&\
 cargo-cache --remove-dir git-repos,registry-sources &&\
@@ -42,7 +42,7 @@ cargo-cache -e &&\
 cd $CARGO_HOME &&\
 ln -s ~/.cargo/config .
 
-RUN rtx plugin add nodejs &&\
+RUN \
 rtx install nodejs@latest &&\
 rtx global nodejs@latest &&\
 eval $(rtx env) &&\
@@ -82,8 +82,7 @@ RUN curl https://bun.sh/install | bash
 RUN ln -s /usr/bin/gist-paste /usr/bin/gist &&\
 cd /usr/local && \
 wget https://cdn.jsdelivr.net/gh/junegunn/fzf/install -O fzf.install.sh &&\
-bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~ &&\
-echo 'PATH=/opt/rust/bin:$PATH' >> /etc/profile.d/path.sh
+bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~ 
 
 COPY os/root /root
 

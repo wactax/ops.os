@@ -8,15 +8,22 @@ set -ex
 export DEBIAN_FRONTEND=noninteractive
 export PNPM_HOME=/opt/pnpm
 export PATH=$PNPM_HOME:$PATH
+export RTX_DATA_DIR=/opt/rtx
+export RTX_CACHE_DIR=/cache/rtx
+
+mkdir -p $RTX_DATA_DIR
+mkdir -p $RTX_CACHE_DIR
+
+enable_ipv6 || true
 
 ZHOS=$ROOT/build/ubuntu_zh/os
 
 if [ -x "$(command -v snap)" ]; then
   systemctl stop snapd || true
   apt remove --purge --assume-yes snapd gnome-software-plugin-snap
-  systemctl disable snapd.service
-  systemctl disable snapd.socket
-  systemctl disable snapd.seeded.service
+  systemctl disable snapd.service || true
+  systemctl disable snapd.socket || true
+  systemctl disable snapd.seeded.service || true
   apt autoremove -y --purge snapd
   apt purge snapd -y
   rm -rf /var/cache/snapd
@@ -108,10 +115,11 @@ export RUSTUP_HOME=/opt/rust
 $CURL https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 
 source $CARGO_HOME/env
+rustup default stable
 
 cargo install --root /usr/local sd
 
-$DIR/dns.sh
+#$DIR/dns.sh
 
 $DIR/zram.sh
 
@@ -128,11 +136,10 @@ if ! [ -x "$(command -v watchexec)" ]; then
 fi
 
 cargo install --root /usr/local \
-  stylua exa cargo-cache tokei \
+  stylua exa cargo-cache tokei atuin \
   diskus cargo-edit cargo-update rtx-cli bat
 
 rtx_add() {
-  rtx plugin add $1
   rtx install $1@latest
   rtx global $1@latest
 }
@@ -141,7 +148,7 @@ rtx_add nodejs
 rtx_add golang
 rtx_add lua
 rtx_add python
-rtx list >~/.tool-versions
+rtx list | awk '{print $1 " " $2}' >~/.tool-versions
 
 eval $(rtx env)
 
@@ -180,6 +187,10 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 bun install -g pnpm
 
+cd /
+
+pnpm i prettier-plugin-toml
+
 pnpm install -g neovim npm-check-updates coffeescript node-pre-gyp \
   diff-so-fancy rome@next @antfu/ni prettier \
   @prettier/plugin-pug stylus-supremacy @w5/gitreset &
@@ -195,8 +206,7 @@ fi
 
 cd /usr/local &&
   wget https://cdn.jsdelivr.net/gh/junegunn/fzf/install -O fzf.install.sh &&
-  yes | bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~ &&
-  echo 'PATH=/opt/rust/bin:$PATH' >>/etc/profile.d/path.sh
+  yes | bash ./fzf.install.sh && rm ./fzf.install.sh && cd ~
 
 rsync -avI $ROOT/os/root/ /root
 
@@ -223,8 +233,8 @@ update-alternatives --install /usr/bin/editor editor /usr/bin/nvim 1 &&
 
 $CURL -fLo /etc/vim/plug.vim --create-dirs https://cdn.jsdelivr.net/gh/junegunn/vim-plug/plug.vim
 vi -E -s -u /etc/vim/sysinit.vim +PlugInstall +qa
-vi +UpdateRemotePlugins +qa
 vi +'CocInstall -sync coc-json coc-yaml coc-css coc-python coc-vetur coc-tabnine coc-svelte' +qa
+vi +UpdateRemotePlugins +qa
 find /etc/vim -type d -exec chmod 755 {} +
 
 pip install --upgrade pip pylint python-language-server ipython xonsh pynvim ruff
@@ -237,6 +247,7 @@ if [ ! -f "$ssh_ed25519" ]; then
 fi
 
 cd /
+rm /etc/supervisord.conf
 rsync -avI $ROOT/os/ /
 rsync -avI $DIR/os/ /
 
@@ -245,6 +256,7 @@ gfw_git
 useradd -s /usr/sbin/nologin -M ntpd-rs || true
 systemctl daemon-reload && systemctl daemon-reexec
 systemctl enable --now ntpd-rs
+systemctl restart ntpd-rs
 
 # 内存小于1GB不装 docker
 mesize=$(cat /proc/meminfo | grep -oP '^MemTotal:\s+\K\d+' /proc/meminfo)
@@ -292,6 +304,12 @@ sed -i "s/#ClientAliveCountMax 3/ClientAliveCountMax 3/g" /etc/ssh/sshd_config
 service sshd reload || service ssh reload
 apt autoremove -y
 
-rm /etc/supervisord.conf
-ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf
+rustup default nightly
+
+journal_max_use=40M
+journal_keep_free=10%
+sed -i "s/^#*SystemMaxUse=.*/SystemMaxUse=${journal_max_use}/" /etc/systemd/journald.conf
+sed -i "s/^#*SystemKeepFree=.*/SystemKeepFree=${journal_keep_free}/" /etc/systemd/journald.conf
+systemctl restart systemd-journald
+
 echo '👌 ✅'
