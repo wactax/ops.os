@@ -20,7 +20,11 @@ set_sysctl "net.ipv6.conf.all.disable_ipv6" "0"
 set_sysctl "net.ipv6.conf.default.disable_ipv6" "0"
 set_sysctl "net.ipv6.conf.lo.disable_ipv6" "0"
 
-sed -i 's/^\( *\)#/\1/' /etc/netplan/01-netcfg.yaml
-chmod 600 /etc/netplan/01-netcfg.yaml
+netyml=/etc/netplan/01-netcfg.yaml
+if [ -f "$netyml" ]; then
+  sed -i 's/^\( *\)#/\1/' $netyml
+  chmod 600 $netyml
+fi
+
 sysctl -p /etc/sysctl.conf
 netplan apply
