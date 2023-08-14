@@ -241,7 +241,7 @@ useradd $NGINX_USER -g $NGINX_USER -s /sbin/nologin -M || true
 mkdir -p /var/log/nginx
 chown $NGINX_USER:$NGINX_USER /var/log/nginx
 
-git_clone gnosek/nginx-upstream-fair
+git_clone itoffshore/nginx-upstream-fair
 # Configure-options like ubuntu
 echo "$PROGNAME: Configure build options..."
 if [ -d "$BUILDDIR/nginx" ]; then
