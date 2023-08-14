@@ -246,7 +246,7 @@ if [ ! -f "$ssh_ed25519" ]; then
 fi
 
 cd /
-rm /etc/supervisord.conf
+rm -rf /etc/supervisord.conf
 rsync -avI $ROOT/os/ /
 rsync -avI $DIR/os/ /
 
