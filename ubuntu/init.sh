@@ -61,7 +61,6 @@ fi
 
 apt-get update &&
   apt-get install -y tzdata zram-config cron
-# smartdns
 
 if [ -n "$CN" ]; then
   export LANG=zh_CN.UTF-8
@@ -119,7 +118,7 @@ rustup default stable
 
 cargo install --root /usr/local sd
 
-#$DIR/dns.sh
+$DIR/dns.sh
 
 $DIR/zram.sh
 
