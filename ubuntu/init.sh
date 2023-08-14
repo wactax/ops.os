@@ -191,7 +191,7 @@ cd /
 pnpm i prettier-plugin-toml
 
 pnpm install -g neovim npm-check-updates coffeescript node-pre-gyp \
-  diff-so-fancy rome@next @antfu/ni prettier \
+  diff-so-fancy rome@next @antfu/ni prettier yarn \
   @prettier/plugin-pug stylus-supremacy @w5/gitreset &
 
 go install github.com/charmbracelet/glow@latest
