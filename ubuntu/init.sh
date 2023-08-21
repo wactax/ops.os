@@ -61,7 +61,6 @@ fi
 
 apt-get update &&
   apt-get install -y tzdata zram-config cron
-# smartdns
 
 if [ -n "$CN" ]; then
   export LANG=zh_CN.UTF-8
@@ -119,7 +118,7 @@ rustup default stable
 
 cargo install --root /usr/local sd
 
-#$DIR/dns.sh
+$DIR/dns.sh
 
 $DIR/zram.sh
 
@@ -192,7 +191,7 @@ cd /
 pnpm i prettier-plugin-toml
 
 pnpm install -g neovim npm-check-updates coffeescript node-pre-gyp \
-  diff-so-fancy rome@next @antfu/ni prettier \
+  diff-so-fancy rome@next @antfu/ni prettier yarn \
   @prettier/plugin-pug stylus-supremacy @w5/gitreset &
 
 go install github.com/charmbracelet/glow@latest
@@ -247,7 +246,7 @@ if [ ! -f "$ssh_ed25519" ]; then
 fi
 
 cd /
-rm /etc/supervisord.conf
+rm -rf /etc/supervisord.conf
 rsync -avI $ROOT/os/ /
 rsync -avI $DIR/os/ /
 

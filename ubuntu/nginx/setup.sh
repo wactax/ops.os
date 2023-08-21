@@ -39,7 +39,6 @@ mkdir -p $BUILDDIR
 cd $BUILDDIR
 
 git_clone openresty/lua-nginx-module -b v$VER_LUA_NGINX_MODULE
-
 lua_add() {
   git_clone openresty/$1
   cd $1
@@ -242,6 +241,7 @@ useradd $NGINX_USER -g $NGINX_USER -s /sbin/nologin -M || true
 mkdir -p /var/log/nginx
 chown $NGINX_USER:$NGINX_USER /var/log/nginx
 
+git_clone itoffshore/nginx-upstream-fair
 # Configure-options like ubuntu
 echo "$PROGNAME: Configure build options..."
 if [ -d "$BUILDDIR/nginx" ]; then
@@ -279,6 +279,7 @@ if [ -d "$BUILDDIR/nginx" ]; then
     --with-mail_ssl_module \
     --with-openssl-opt='enable-tls1_3 enable-ec_nistp_64_gcc_128' \
     --add-module=$BUILDDIR/lua-nginx-module \
+    --add-module=$BUILDDIR/nginx-upstream-fair \
     --add-module=$BUILDDIR/headers-more-nginx-module \
     --add-module=$BUILDDIR/ngx_devel_kit \
     --add-module=$BUILDDIR/nchan \
