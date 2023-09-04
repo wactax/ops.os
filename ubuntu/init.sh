@@ -184,13 +184,13 @@ fi
 export BUN_INSTALL="/opt/bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-npm i -g yarn pnpm
+npm i -g yarn pnpm @antfu/ni
 
 cd /
 
 pnpm i prettier-plugin-toml
 pnpm install -g neovim npm-check-updates coffeescript node-pre-gyp \
-  diff-so-fancy rome@next @antfu/ni prettier \
+  diff-so-fancy rome@next prettier \
   @prettier/plugin-pug stylus-supremacy @w5/gitreset &
 
 go install github.com/charmbracelet/glow@latest
