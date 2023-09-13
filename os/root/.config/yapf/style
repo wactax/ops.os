@@ -3,7 +3,7 @@ based_on_style=pep8
 # Align closing bracket with visual indentation.
 align_closing_bracket_with_visual_indent=True
 
-# Allow dictionary keys to exist on multiple lines. For example:
+# Allow dictionary keys to exist on multiple lines. For ezample:
 #
 #   x = {
 #       ('this is the first element of a tuple',
@@ -21,7 +21,7 @@ allow_split_before_default_or_named_assigns=True
 # Allow splits before the dictionary value.
 allow_split_before_dict_value=True
 
-#   Let spacing indicate operator precedence. For example:
+#   Let spacing indicate operator precedence. For ezample:
 #
 #     a = 1 * 2 + 3 / 4
 #     b = 1 / 2 - 3 * 4
@@ -52,7 +52,7 @@ blank_line_before_class_docstring=False
 blank_line_before_module_docstring=False
 
 # Insert a blank line before a 'def' or 'class' immediately nested
-# within another 'def' or 'class'. For example:
+# within another 'def' or 'class'. For ezample:
 #
 #   class Foo:
 #                      # <------ this blank line
@@ -61,7 +61,7 @@ blank_line_before_module_docstring=False
 blank_line_before_nested_class_or_def=False
 
 # Do not split consecutive brackets. Only relevant when
-# dedent_closing_brackets is set. For example:
+# dedent_closing_brackets is set. For ezample:
 #
 #    call_func_that_takes_a_dict(
 #        {
@@ -97,7 +97,7 @@ continuation_indent_width=2
 
 # Put closing brackets on a separate line, dedented, if the bracketed
 # expression can't fit in a single line. Applies to all kinds of brackets,
-# including function definitions and calls. For example:
+# including function definitions and calls. For ezample:
 #
 #   config = {
 #       'key1': 'value1',
@@ -121,7 +121,7 @@ disable_ending_comma_heuristic=False
 each_dict_entry_on_separate_line=True
 
 # Require multiline dictionary even if it would normally fit on one line.
-# For example:
+# For ezample:
 #
 #   config = {
 #       'key1': 'value1'
@@ -143,7 +143,7 @@ indent_blank_lines=False
 
 # Put closing brackets on a separate line, indented, if the bracketed
 # expression can't fit in a single line. Applies to all kinds of brackets,
-# including function definitions and calls. For example:
+# including function definitions and calls. For ezample:
 #
 #   config = {
 #       'key1': 'value1',
@@ -160,7 +160,7 @@ indent_blank_lines=False
 indent_closing_brackets=False
 
 # Indent the dictionary value if it cannot fit on the same line as the
-# dictionary key. For example:
+# dictionary key. For ezample:
 #
 #   config = {
 #       'key1':
@@ -176,7 +176,7 @@ indent_width=2
 # Join short lines into one line. E.g., single line 'if' statements.
 join_multiple_lines=True
 
-# Do not include spaces around selected binary operators. For example:
+# Do not include spaces around selected binary operators. For ezample:
 #
 #   1 + 2 * 3 - 4 / 5
 #
@@ -209,7 +209,7 @@ spaces_around_list_delimiters=False
 # Use spaces around the power operator.
 spaces_around_power_operator=False
 
-# Use spaces around the subscript / slice operator.  For example:
+# Use spaces around the subscript / slice operator.  For ezample:
 #
 #   my_list[1 : 10 : 2]
 spaces_around_subscript_colon=False
@@ -228,7 +228,7 @@ spaces_around_tuple_delimiters=False
 # before each trailing comment) or list of values (representing
 # alignment column values; trailing comments within a block will
 # be aligned to the first column value that is greater than the maximum
-# line length within the block). For example:
+# line length within the block). For ezample:
 #
 # With spaces_before_comment=5:
 #
@@ -266,7 +266,7 @@ spaces_before_comment=2
 # etc.
 space_between_ending_comma_and_closing_bracket=True
 
-# Use spaces inside brackets, braces, and parentheses.  For example:
+# Use spaces inside brackets, braces, and parentheses.  For ezample:
 #
 #   method_call( 1 )
 #   my_dict[ 3 ][ 1 ][ get_index( *args, **kwargs ) ]
@@ -296,7 +296,7 @@ split_before_bitwise_operator=True
 # a single line.
 split_before_closing_bracket=True
 
-# Split before a dictionary or set generator (comp_for). For example, note
+# Split before a dictionary or set generator (comp_for). For ezample, note
 # the split before the 'for':
 #
 #   foo = {

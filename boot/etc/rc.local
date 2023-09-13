@@ -7,7 +7,7 @@ chmod 777 /tmp
 apt-get update -y
 apt-get upgrade -y
 apt-get install -y \
-exa ncdu exuberant-ctags asciinema man \
+eza ncdu exuberant-ctags asciinema man \
 tzdata sudo tmux openssh-client libpq-dev \
 rsync mlocate gist less util-linux apt-utils \
 htop cron postgresql-client bsdmainutils \

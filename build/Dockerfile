@@ -34,7 +34,7 @@ RUN \
 source $CARGO_HOME/env &&\
 cargo install --root /usr/local --locked watchexec-cli &&\
 cargo install --root /usr/local --git https://github.com/wacfork/ripgrep.git &&\
-cargo install --root /usr/local stylua erdtree cargo-cache sd tokei diskus cargo-edit cargo-update rtx-cli wasm-bindgen-cli wasm-pack exa atuin &&\
+cargo install --root /usr/local stylua erdtree cargo-cache sd tokei diskus cargo-edit cargo-update rtx-cli wasm-bindgen-cli wasm-pack eza atuin &&\
 rm -rf $CARGO_HOME/registry &&\
 rustup target add wasm32-unknown-unknown &&\
 cargo-cache --remove-dir git-repos,registry-sources &&\

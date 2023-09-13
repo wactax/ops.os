@@ -12,8 +12,8 @@
 #     - `@c4d3ec2c` instead of something like `v1.4.0~11` when in detached HEAD state.
 #     - No automatic `git fetch` (the same as in Pure with `PURE_GIT_PULL=0`).
 #
-# Apart from the differences listed above, the replication of Pure prompt is exact. This includes
-# even the questionable parts. For example, just like in Pure, there is no indication of Git status
+# Apart from the differences listed above, the replication of Pure prompt is ezact. This includes
+# even the questionable parts. For ezample, just like in Pure, there is no indication of Git status
 # being stale; prompt symbol is the same in command, visual and overwrite vi modes; when prompt
 # doesn't fit on one line, it wraps around with no attempt to shorten it.
 #
@@ -182,7 +182,7 @@
   typeset -g POWERLEVEL9K_INSTANT_PROMPT=verbose
 
   # Hot reload allows you to change POWERLEVEL9K options after Powerlevel10k has been initialized.
-  # For example, you can type POWERLEVEL9K_BACKGROUND=red and see your prompt turn red. Hot reload
+  # For ezample, you can type POWERLEVEL9K_BACKGROUND=red and see your prompt turn red. Hot reload
   # can slow down prompt by 1-2 milliseconds, so it's better to keep it turned off unless you
   # really need it.
   typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true

@@ -3,7 +3,7 @@
 alias df=duf
 alias du=diskus
 alias gl=glances
-alias ls=exa
+alias ls=eza
 alias vi=nvim
 alias vim=nvim
 alias rg="rg -L"
