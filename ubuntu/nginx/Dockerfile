@@ -1,4 +1,6 @@
-FROM ubuntu:23.10 as build
+
+ARG UBUNTU=23.10
+FROM ubuntu:$UBUNTU as build
 
 WORKDIR /app
 
@@ -18,7 +20,7 @@ RUN ./setup.sh
 ADD cpso.sh .
 RUN ./cpso.sh
 
-FROM ubuntu:23.10
+FROM ubuntu:$UBUNTU
 
 COPY --from=build /usr/local/nginx /usr/local/nginx
 COPY --from=build /usr/sbin/nginx /usr/sbin/nginx
