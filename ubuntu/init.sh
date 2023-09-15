@@ -111,7 +111,7 @@ fi
 export CARGO_HOME=/opt/rust
 export RUSTUP_HOME=/opt/rust
 
-$CURL https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --default-toolchain nighty
+$CURL https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --default-toolchain nightly
 
 source $CARGO_HOME/env
 #rustup default stable
