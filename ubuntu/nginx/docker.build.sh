@@ -4,4 +4,4 @@ DIR=$(realpath $0) && DIR=${DIR%/*}
 cd $DIR
 set -ex
 
-docker build . -t nginx
+docker build . -t wactax/nginx
