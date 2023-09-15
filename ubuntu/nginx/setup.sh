@@ -82,7 +82,7 @@ lastVer() {
 git_clone openresty/headers-more-nginx-module
 git_clone google/ngx_brotli
 git_clone openresty/luajit2
-git_clone slact/nchan
+#git_clone slact/nchan
 git_clone vision5/ngx_devel_kit
 
 export LUAJIT_LIB=/usr/local/src/LuaJIT/lib
@@ -281,8 +281,8 @@ if [ -d "$BUILDDIR/nginx" ]; then
     --add-module=$BUILDDIR/lua-nginx-module \
     --add-module=$BUILDDIR/headers-more-nginx-module \
     --add-module=$BUILDDIR/ngx_devel_kit \
-    --add-module=$BUILDDIR/nchan \
     --add-module=$BUILDDIR/ngx_brotli
+  # --add-module=$BUILDDIR/nchan \
   # --with-openssl=$BUILDDIR/boringssl \
   # -L$BUILDDIR/boringssl/.openssl/lib/
   # -I$BUILDDIR/boringssl/.openssl/include/
