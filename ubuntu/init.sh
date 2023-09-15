@@ -111,10 +111,10 @@ fi
 export CARGO_HOME=/opt/rust
 export RUSTUP_HOME=/opt/rust
 
-$CURL https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
+$CURL https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path --default-toolchain nighty
 
 source $CARGO_HOME/env
-rustup default stable
+#rustup default stable
 
 cargo install --root /usr/local sd
 
