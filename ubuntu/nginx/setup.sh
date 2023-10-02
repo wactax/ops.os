@@ -247,6 +247,7 @@ git_clone chobits/ngx_http_proxy_connect_module
 echo "$PROGNAME: Configure build options..."
 if [ -d "$BUILDDIR/nginx" ]; then
   cd $BUILDDIR/nginx || error_exit "Failed to make $BUILDDIR/nginx current directory."
+  patch -p1 <$BUILDDIR/ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_102101.patch
   ./auto/configure \
     --user=$NGINX_USER --group=$NGINX_USER \
     --prefix=/usr/local/nginx \
