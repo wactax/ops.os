@@ -241,6 +241,7 @@ useradd $NGINX_USER -g $NGINX_USER -s /sbin/nologin -M || true
 mkdir -p /var/log/nginx
 chown $NGINX_USER:$NGINX_USER /var/log/nginx
 
+git_clone chobits/ngx_http_proxy_connect_module
 # git_clone itoffshore/nginx-upstream-fair
 # Configure-options like ubuntu
 echo "$PROGNAME: Configure build options..."
@@ -281,7 +282,8 @@ if [ -d "$BUILDDIR/nginx" ]; then
     --add-module=$BUILDDIR/lua-nginx-module \
     --add-module=$BUILDDIR/headers-more-nginx-module \
     --add-module=$BUILDDIR/ngx_devel_kit \
-    --add-module=$BUILDDIR/ngx_brotli
+    --add-module=$BUILDDIR/ngx_brotli \
+    --add-module=$BUILDDIR/ngx_http_proxy_connect_module
   # --add-module=$BUILDDIR/nchan \
   # --with-openssl=$BUILDDIR/boringssl \
   # -L$BUILDDIR/boringssl/.openssl/lib/
