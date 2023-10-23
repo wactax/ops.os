@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee
 
 > zx/globals:
-  @w5/uridir
+  @3-/uridir
 
 < default main = =>
   ROOT = uridir(import.meta)
