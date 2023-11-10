@@ -8,6 +8,8 @@ fi
 
 branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' |awk -F' ' '{print $2}'`
 
+set -ex
+
 if [ "$branch" == "main" ]; then
   git checkout -b dev
   branch=dev
