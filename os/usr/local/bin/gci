@@ -6,6 +6,10 @@ if [ -z "$msg" ]; then
   msg='♨'
 fi
 
+root=$(git rev-parse --show-toplevel)
+
+cd $root
+
 branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' |awk -F' ' '{print $2}'`
 
 set -ex
@@ -15,7 +19,7 @@ if [ "$branch" == "main" ]; then
   branch=dev
 fi
 
-git add --update :/ && git commit -m "$msg"  || true
+git add . && git commit -m "$msg"  || true
 git pull origin $branch || true
 git push --recurse-submodules=on-demand --tag --set-upstream origin $branch 
 

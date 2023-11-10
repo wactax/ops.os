@@ -9,16 +9,20 @@ fi
 
 branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' |awk -F' ' '{print $2}'`
 
+root=$(git rev-parse --show-toplevel)
+
+cd $root
+
 set -ex
 
 if [ "$branch" != "main" ]; then
 git pull origin $branch
-git add --update :/ && git commit -m "$msg"  || true
+git add . && git commit -m "$msg"  || true
 git pull origin main
 git merge main
 hash=$(git log --format=%H -1 origin/main)
 git reset --soft $hash
-git add --update :/ && git commit -m "$msg"  || true
+git add . && git commit -m "$msg"  || true
 git push -f origin $branch
 fi
 
