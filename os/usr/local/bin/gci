@@ -17,8 +17,5 @@ fi
 
 git add --update :/ && git commit -m "$msg"  || true
 git pull origin $branch || true
-git pull origin main
-git merge main
-
 git push --recurse-submodules=on-demand --tag --set-upstream origin $branch 
 
