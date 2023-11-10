@@ -7,6 +7,8 @@ if [ -z "$msg" ]; then
   exit 1
 fi
 
+msg=$(clitran $msg)
+
 branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' |awk -F' ' '{print $2}'`
 
 root=$(git rev-parse --show-toplevel)
